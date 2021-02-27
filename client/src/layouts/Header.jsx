@@ -5,10 +5,12 @@ import { Link } from 'react-router-dom'
 const Header = () => {
   return (
     <header className='main-header'>
-      <Link to='/' className='brand'>
-        Yonga
-      </Link>
-      <Navigation />
+      <div className='container'>
+        <Link to='/' className='brand'>
+          Yonga
+        </Link>
+        <Navigation />
+      </div>
     </header>
   )
 }

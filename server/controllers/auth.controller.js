@@ -1,0 +1,230 @@
+//  AUTHENTICATION CONTROLLERS
+//  Base URL: /api/auth
+
+const jwt = require('jsonwebtoken')
+const User = require('../models/user.model')
+
+const { sendEmail, createURL, hashPassword, capitalize } = require('../utils/')
+
+const cookieOptions = {
+  httpOnly: true,
+  path: '/api/auth/access_token',
+  expires: new Date(Date.now() + process.env.JWT_EXPIRE_COOKIE * 24 * 60 * 60 * 1000),
+  secure: process.env.NODE_ENV === 'production' ? true : false
+}
+
+// @route   POST  /auth/register
+exports.register = async (req, res) => {
+  const { name, email, password } = req.body
+
+  const userExists = await User.findOne({ email, access_type: 'local' })
+
+  if (userExists) {
+    return res.status(403).json({
+      error: {
+        key: 'email',
+        value: 'Account already exists.'
+      }
+    })
+  }
+
+  const activationURL = createURL.activateAccount({
+    name: capitalize(name),
+    email,
+    password: await hashPassword(password)
+  })
+
+  sendEmail.createAccount(nameCapitalized, email, activationURL)
+
+  res.status(200).json({ msg: 'Account confirmation link sent to email.' })
+}
+
+//  @route  POST  /auth/activate
+exports.activate = async (req, res) => {
+  const { activation_token } = req.body
+
+  try {
+    const user = jwt.verify(activation_token, process.env.JWT_SECRET_ACTIVATE)
+    const userExists = await User.findOne({ email: user.email, access_type: 'local' })
+    if (userExists) return res.status(400).json({ msg: 'User already exists.' })
+
+    const newUser = new User({ ...user, access_type: 'local' })
+
+    await newUser.save()
+
+    res.status(201).json({ msg: 'Account has been created.' })
+  } catch (error) {
+    return res.status(400).json({ error })
+  }
+}
+
+//  @route  POST  /auth/login
+exports.login = async (req, res) => {
+  const { email, password } = req.body
+
+  const user = await User.findOne({ email, access_type: 'local' })
+
+  if (!user) {
+    return res.status(400).json({
+      error: { key: 'email', value: 'This email does not exist.' }
+    })
+  }
+
+  const isMatch = await user.matchPassword(password)
+
+  if (!isMatch) {
+    return res.status(401).json({
+      error: {
+        key: 'password',
+        value: 'Your password is incorrect.'
+      }
+    })
+  }
+
+  const refresh_token = user.getRefreshToken()
+  const access_token = user.getAccessToken()
+
+  res.cookie('refreshToken', refresh_token, cookieOptions)
+
+  res.json({
+    refresh_token,
+    access_token,
+    expiresIn: process.env.JWT_EXPIRE_REFRESH
+  })
+}
+
+// @route POST  /auth/google_login
+exports.googleLogin = async (req, res) => {
+  try {
+    const { tokenId } = req.body
+
+    const client = new OAuth2(process.env.MAILING_SERVICE_CLIENT_ID)
+
+    const verify = await client.verifyIdToken({ idToken: tokenId, audience: process.env.MAILING_SERVICE_CLIENT_ID })
+
+    const { email_verified, email, name, picture } = verify.payload
+    if (!email_verified) return res.status(400).json({ msg: 'Email verification failed.' })
+
+    const user = await Users.findOne({ email, access_type: 'google' })
+
+    if (!user) {
+      const newUser = new Users({
+        name,
+        email,
+        password: passwordHash,
+        avatar: picture,
+        access_type: 'google'
+      })
+
+      await newUser.save()
+    }
+
+    const refresh_token = user.getRefreshToken()
+    const access_token = user.getAccessToken()
+
+    res.cookie('refreshToken', refresh_token, cookieOptions)
+
+    res.json({
+      refresh_token,
+      access_token,
+      expiresIn: process.env.JWT_EXPIRE_REFRESH
+    })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
+}
+
+//  @route   GET  /auth/access_token
+exports.getAccessToken = async (req, res) => {
+  const refresh_token = req.cookies.refreshToken
+
+  if (!refresh_token) return res.status(401).json({ msg: 'User unauthorized.' })
+
+  jwt.verify(refresh_token, process.env.JWT_SECRET_REFRESH, async (err, claims) => {
+    if (err) return res.status(401).json({ msg: err.response })
+
+    try {
+      const user = await User.findById(claims.id)
+      const access_token = user.getAccessToken()
+      res.json({ access_token })
+    } catch (error) {
+      res.status(400).json({ error })
+    }
+  })
+}
+
+//  @route   GET  /auth/currentuser
+//  @access  PRIVATE
+exports.getCurrentUser = async (req, res) => {
+  const user = await User.findById(req.user.id).select('-password')
+
+  res.status(200).json({ user })
+}
+
+//  @route   POST   /auth/logout
+exports.logout = async (req, res) => {
+  res.clearCookie('refreshToken', cookieOptions)
+
+  res.status(200).json({
+    msg: 'User Logged out.'
+  })
+}
+
+//  @route   POST   /auth/forgotpassword
+exports.forgotPassword = async (req, res) => {
+  const user = await User.findOne({
+    email: req.body.email
+  }).select('name email _id')
+
+  if (!user) {
+    return res.status(404).json({ error: 'There is no user with that email.' })
+  }
+
+  const resetToken = user.getResetToken()
+
+  const { name, email, _id } = user
+  const resetURL = createURL.resetPassword(_id, resetToken)
+  sendEmail.resetPassword(name, email, resetURL)
+
+  res.status(200).json({ msg: 'Reset link sent to email.' })
+}
+
+//  @route    GET   /auth/validatereset_token
+exports.validateResetToken = async (req, res) => {
+  if (!req.query || !req.query.reset_token) {
+    return res.stauts(401).json({ msg: 'Reset token required.' })
+  }
+
+  const { reset_token } = req.query
+
+  try {
+    const decoded = jwt.verify(reset_token, process.env.JWT_SECRET_RESET)
+
+    return res.json({ id: decoded.id })
+  } catch (error) {
+    if (error.name === 'TokenExpiredError') {
+      return res.status(403).json({ error: 'Session timed out.' })
+    } else if (error.name === 'JsonWebTokenError') {
+      return res.status(401).json({ error: 'Invalid token.' })
+    } else {
+      return res.status(400).json({ error })
+    }
+  }
+}
+
+//  @route    POST  /auth/resetpassword
+exports.resetPassword = async (req, res) => {
+  const { clientId, password } = req.body
+
+  await User.findByIdAndUpdate(clientId, {
+    password: await hashPassword(password)
+  })
+
+  res.json({ msg: 'Password updated.' })
+}
+
+//  @route  POST  /auth/facebook_login
+exports.facebookLogin = async (req, res) => {}
+
+//  @route
+exports.twitterLogin = async (req, res) => {}

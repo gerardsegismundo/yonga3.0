@@ -17,6 +17,7 @@
     "react-dom": "^16.13.1",
     "react-dropdown": "^1.8.0",
     "react-easy-crop": "^3.3.1",
+    "react-google-login": "^5.2.2",
     "react-notifications": "^1.7.2",
     "react-paypal-express-checkout": "^1.0.5",
     "react-redux": "^7.2.2",
@@ -41,7 +42,11 @@
     "extends": "react-app"
   },
   "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
     "development": [
       "last 1 chrome version",
       "last 1 firefox version",

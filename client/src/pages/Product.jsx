@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import Rating from '../components/Rating'
 
 import { useParams } from 'react-router-dom'
@@ -24,12 +24,10 @@ const Product = () => {
   // Unslug
   const productName = product_name.replace(/-/g, ' ')
 
-  useEffect(() => {
-    progress(() => {
-      dispatch(getProduct(productName))
-    })
+  const getProductRef = useRef(() => progress(() => dispatch(getProduct(productName))))
 
-    // eslint-disable-next-line
+  useEffect(() => {
+    getProductRef.current()
   }, [productName])
 
   const handleOnChange = e => setQuantity(e.target.value)

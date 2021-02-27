@@ -12,8 +12,8 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const [form, setForm] = useState({
-    email: '',
-    password: ''
+    email: 'qwertyyonga@gmail.com',
+    password: '123456'
   })
 
   const [error, setError] = useState({
@@ -57,7 +57,7 @@ const LoginForm = () => {
     setIsLoading(true)
     progress(async () => {
       try {
-        const { data } = await axios.post('/user/login', form)
+        const { data } = await axios.post('/auth/login', form)
 
         dispatch(login(data))
 

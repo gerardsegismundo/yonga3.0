@@ -28,7 +28,12 @@ const Dashboard = () => {
   const handleLogout = () => {
     progress(() => dispatch(logout()))
   }
-
+  /* 
+  if (!user.data.name) {
+    // NotificationManager
+    return <h1>SOMETHING WENT WRONG</h1>
+  }
+ */
   return isAuthenticated && user.data ? (
     <div className='dashboard'>
       <nav>

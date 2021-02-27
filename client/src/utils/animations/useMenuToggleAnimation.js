@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 const useMenuToggleAnimation = tl => {
   useEffect(() => {
     tl.to(
-      'body',
+      'body, .main-header',
       {
         duration: 0.6,
         background: 'rgb(34,34,34)'

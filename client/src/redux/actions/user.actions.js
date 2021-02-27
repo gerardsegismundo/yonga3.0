@@ -1,4 +1,4 @@
-import authAxios from '../../utils/helpers/authAxios'
+import { authAxios } from '../../utils/helpers'
 import axios from 'axios'
 
 export const login = ({ access_token }) => dispatch => {
@@ -7,7 +7,7 @@ export const login = ({ access_token }) => dispatch => {
 
 export const getCurrentUser = () => async dispatch => {
   try {
-    const { data } = await authAxios.post('/user/currentuser')
+    const { data } = await authAxios.post('/auth/currentuser')
 
     dispatch({ type: 'GET_CURRENT_USER', payload: data.user })
   } catch (error) {
@@ -17,7 +17,7 @@ export const getCurrentUser = () => async dispatch => {
 
 export const refreshAccessToken = () => async dispatch => {
   try {
-    const { data } = await axios.get('/user/access_token')
+    const { data } = await axios.get('/auth/access_token')
 
     dispatch({ type: 'REFRESH_ACCESS_TOKEN', payload: data.access_token })
   } catch (error) {
@@ -27,7 +27,7 @@ export const refreshAccessToken = () => async dispatch => {
 
 export const logout = () => async dispatch => {
   try {
-    await authAxios.get('/user/logout')
+    await authAxios.get('/auth/logout')
   } catch (error) {
     return console.error(error.response.data)
   }

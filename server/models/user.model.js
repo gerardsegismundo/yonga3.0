@@ -8,31 +8,31 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a name']
     },
+
     email: {
       type: String,
       required: [true, 'Please add an email'],
       unique: true,
-      match: [
-        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-        'Please add a valid email'
-      ]
+      match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email']
     },
+
     isAdmin: {
       type: Boolean,
       default: false
     },
 
+    access_type: {
+      type: String
+    },
+
     password: {
       type: String,
-      required: [true, 'Please add a password'],
       minlength: 6
     },
 
     avatar: {
       url: {
-        type: mongoose.SchemaTypes.Url,
-        default:
-          'https://res.cloudinary.com/yonga/image/upload/c_scale,w_221/v1609120288/no_image_avatar_f1er2g.png'
+        type: mongoose.SchemaTypes.Url
       },
       public_id: {
         type: String
@@ -64,21 +64,21 @@ const UserSchema = new mongoose.Schema(
   { timestamps: true }
 )
 
-// JWT -> refresh_token
+// JWT  refresh_token
 UserSchema.methods.getRefreshToken = function () {
-  return jwt.sign({ client_id: this._id }, process.env.JWT_SECRET_REFRESH, {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_REFRESH, {
     expiresIn: process.env.JWT_EXPIRE_REFRESH
   })
 }
 
-// JWT -> access_token
+// JWT  access_token
 UserSchema.methods.getAccessToken = function () {
-  return jwt.sign({ client_id: this._id }, process.env.JWT_SECRET_ACCESS, {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET_ACCESS, {
     expiresIn: process.env.JWT_EXPIRE_ACCESS
   })
 }
 
-// JWT -> reset_token
+// JWT  reset_token
 UserSchema.methods.getResetToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET_RESET, {
     expiresIn: process.env.JWT_EXPIRE_RESET
