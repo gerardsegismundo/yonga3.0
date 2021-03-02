@@ -17,7 +17,7 @@ const Avatar = () => {
 
   return (
     <div className='avatar'>
-      <img src={url} alt='avatar' />
+      <img src={url && url} alt='avatar' />
       <div className='input-group'>
         <label htmlFor='avatar' className='lb-2'>
           <Camera />

@@ -34,6 +34,7 @@ const Dashboard = () => {
     return <h1>SOMETHING WENT WRONG</h1>
   }
  */
+
   return isAuthenticated && user.data ? (
     <div className='dashboard'>
       <nav>
@@ -69,7 +70,7 @@ const Dashboard = () => {
             <Address />
           </Route>
           <Route exact path={`${path}/account-details`}>
-            <AccountDetails />
+            <AccountDetails accessType={user.data.access_type} />
           </Route>
         </Switch>
       </section>

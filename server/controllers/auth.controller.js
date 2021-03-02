@@ -6,6 +6,9 @@ const User = require('../models/user.model')
 
 const { sendEmail, createURL, hashPassword, capitalize } = require('../utils/')
 
+const { google } = require('googleapis')
+const { OAuth2 } = google.auth
+
 const cookieOptions = {
   httpOnly: true,
   path: '/api/auth/access_token',
@@ -28,15 +31,25 @@ exports.register = async (req, res) => {
     })
   }
 
+  const capitalizedName = capitalize(name)
+
   const activationURL = createURL.activateAccount({
-    name: capitalize(name),
+    name: capitalizedName,
     email,
     password: await hashPassword(password)
   })
 
-  sendEmail.createAccount(nameCapitalized, email, activationURL)
+  await sendEmail.createAccount({
+    name: capitalizedName,
+    sendTo: email,
+    activationURL,
+    res,
+    cb: err => {
+      if (err) return res.status(400).json({ msg: 'Register account failed.', error: err })
 
-  res.status(200).json({ msg: 'Account confirmation link sent to email.' })
+      res.status(200).json({ msg: 'Account confirmation link sent to email.' })
+    }
+  })
 }
 
 //  @route  POST  /auth/activate
@@ -105,22 +118,29 @@ exports.googleLogin = async (req, res) => {
     const { email_verified, email, name, picture } = verify.payload
     if (!email_verified) return res.status(400).json({ msg: 'Email verification failed.' })
 
-    const user = await Users.findOne({ email, access_type: 'google' })
+    const user = await User.findOne({ email, access_type: 'google' })
+
+    let refresh_token
+    let access_token
 
     if (!user) {
-      const newUser = new Users({
+      const newUser = new User({
         name,
         email,
-        password: passwordHash,
-        avatar: picture,
+        avatar: {
+          url: picture
+        },
         access_type: 'google'
       })
 
       await newUser.save()
-    }
 
-    const refresh_token = user.getRefreshToken()
-    const access_token = user.getAccessToken()
+      refresh_token = newUser.getRefreshToken()
+      access_token = newUser.getAccessToken()
+    } else {
+      refresh_token = user.getRefreshToken()
+      access_token = user.getAccessToken()
+    }
 
     res.cookie('refreshToken', refresh_token, cookieOptions)
 
@@ -224,7 +244,9 @@ exports.resetPassword = async (req, res) => {
 }
 
 //  @route  POST  /auth/facebook_login
-exports.facebookLogin = async (req, res) => {}
+exports.facebookLogin = async (req, res) => {
+  console.log(tokenId)
+}
 
-//  @route
+//  @route  POST  /auth/twitter_login
 exports.twitterLogin = async (req, res) => {}

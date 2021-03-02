@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { Route, Switch } from 'react-router-dom'
 
@@ -51,23 +51,28 @@ const App = () => {
 
   const scrollDirection = useObservable(watchScroll, 'Up')
 
-  useEffect(() => {
+  const loadProducts = useRef(() => {
     dispatch(getProducts())
     dispatch(filterProducts())
+  })
+
+  const getCurrentUserRef = useRef(() => {
+    progress(() => dispatch(getCurrentUser(localStorage.access_token)))
+  })
+
+  useEffect(() => {
+    loadProducts.current()
 
     gsap.to('body', { css: { visibility: 'visible' } })
 
     landingAnimation()
-
-    // eslint-disable-next-line
   }, [])
 
   useEffect(() => {
     if (localStorage.access_token && user.isAuthenticated) {
-      progress(() => dispatch(getCurrentUser(localStorage.access_token)))
+      getCurrentUserRef.current()
     }
-    // eslint-disable-next-line
-  }, [localStorage.access_token])
+  }, [user.isAuthenticated])
 
   useResponsiveVH()
 

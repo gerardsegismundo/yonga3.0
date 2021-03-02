@@ -29,19 +29,19 @@ exports.uploadAvatar = async (req, res) => {
   const file = req.files.file
 
   if (req.body.deleteId) {
-    cloudinary.v2.uploader.destroy(req.body.deleteId, (error, result) => {
+    cloudinary.v2.uploader.destroy(req.body.deleteId, error => {
       if (error) return res.status(400).json({ error })
     })
   }
 
-  const options = {
+  const uploadOptions = {
     folder: 'avatars',
     width: 150,
     height: 150,
     crop: 'fill'
   }
 
-  cloudinary.v2.uploader.upload(file.tempFilePath, options, async (error, result) => {
+  cloudinary.v2.uploader.upload(file.tempFilePath, uploadOptions, async (error, result) => {
     if (error) return res.status(400).json({ error })
 
     // Delete tmp file

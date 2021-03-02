@@ -35,19 +35,15 @@ const smtpTransport = nodemailer.createTransport({
   }
 })
 
-const sendMail = mailOptions => {
-  smtpTransport.sendMail(mailOptions, (err, infor) => {
-    if (err) return err
-
-    return infor
-  })
+const sendMail = async (mailOptions, cb) => {
+  await smtpTransport.sendMail(mailOptions, (err, infor) => cb(err, infor))
 }
 
 const sendEmail = {
-  createAccount: (name, to, url) => {
+  createAccount: ({ name, sendTo, activationURL, cb }) => {
     const mailOptions = {
       from: MAILING_SERVICE_EMAIL,
-      to: to,
+      to: sendTo,
       subject: 'Yonga Account Created',
       html: `
               <div>
@@ -59,7 +55,7 @@ const sendEmail = {
                 <p syle="margin-bottom: 1rem; color: #212121">Click on this link below to confirm your subscription and we’ll take it from there -
                 </p>
                            
-                <a href=${url} style="background: #212121; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display:inline-block;   border-radius: 1px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">Verify your email address</a>
+                <a href=${activationURL} style="background: #212121; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display:inline-block;   border-radius: 1px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">Verify your email address</a>
                
                 <p style="margin-top: 1rem; color: #212121;">This account verification is only valid for 30 minutes.</p> 
                 <p syle="color: #212121">We hope to see you on the other side,</p>
@@ -71,12 +67,12 @@ const sendEmail = {
 
                 <p style="margin-top: 1rem;">If you're having trouble clicking the password reset button, copy and paste the URL below into your web browser.</p>
 
-                <a style="margin-top: 1.5rem;color: blue;text-decoration: underline;">${url}</a>
+                <a style="margin-top: 1.5rem;color: blue;text-decoration: underline;">${activationURL}</a>
               </div>
           `
     }
 
-    sendMail(mailOptions)
+    sendMail(mailOptions, cb)
   },
 
   resetPassword: (name, to, url) => {

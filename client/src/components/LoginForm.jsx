@@ -43,6 +43,7 @@ const LoginForm = () => {
     })
   }
 
+  // local login
   const handleOnSubmit = e => {
     e.preventDefault()
     clearError()

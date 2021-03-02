@@ -39,9 +39,12 @@
         height: 20px;
         cursor: pointer;
 
-        span {
-          transform: translateY(-100%);
-          display: block;
+        .wrapper {
+          .menu-text-closed,
+          .menu-text-opened {
+            transform: translateY(-100%);
+            display: block;
+          }
         }
       }
     }

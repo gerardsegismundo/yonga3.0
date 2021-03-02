@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { validateRegister } from '../utils/validations'
 import { removeErrorOnChange, progress } from '../utils/helpers'
 import { Link } from 'react-router-dom'
+// eslint-disable-next-line
 import { NotificationManager } from 'react-notifications'
 import _ from 'lodash'
 
@@ -68,17 +69,26 @@ const Register = () => {
         try {
           const payload = _.omit(form, ['confirmPassword'])
 
-          await axios.post('/user/register', payload)
+          const { data } = await axios.post('/auth/register', payload)
 
-          NotificationManager.success(`Your registration confirmation has been sent to ${form.email}.`, 'Email Sent.')
+          console.log(data)
+          console.log('TAE!!!')
+          // NotificationManager.success(`Your registration confirmation has been sent to ${form.email}.`, 'Email Sent.')
 
-          clearForm()
+          // clearForm()
         } catch (error) {
+          console.error(error)
+
           if (error.response.data.error) {
             setError({
               ...error,
               [error.response.data.error.key]: error.response.data.error.value
             })
+          }
+
+          // token has expired or revoked
+          if (error.response.data.error.code === 'EAUTH') {
+            NotificationManager.error('Oops! Sorry, something went wrong. Please try again later.')
           }
         }
       }

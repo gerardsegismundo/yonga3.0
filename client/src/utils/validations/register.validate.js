@@ -14,6 +14,5 @@ export const validateRegister = ({ name, email, password, confirmPassword }) => 
     errors.confirmPassword = 'Password and confirm password did not match.'
   }
 
-  console.log(errors)
   return Object.keys(errors).length === 0 ? false : errors
 }
