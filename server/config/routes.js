@@ -6,7 +6,6 @@ const xss = require('xss-clean')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
 
-require('mongoose-type-url')
 require('express-async-errors')
 
 // Routes

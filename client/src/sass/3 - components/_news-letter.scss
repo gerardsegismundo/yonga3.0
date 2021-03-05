@@ -2,6 +2,12 @@
   margin-top: 2rem;
   background-color: $color-dark;
   color: $white;
+  transform: translateY(4.1rem);
+
+  @include media('>tablet') {
+    padding: 1vw 0;
+    transform: translateY(9rem);
+  }
 
   .wrapper {
     padding: 4rem 0 6.5rem 0;

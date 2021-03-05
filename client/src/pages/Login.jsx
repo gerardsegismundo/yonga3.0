@@ -24,24 +24,33 @@ const Login = ({ history }) => {
     // NotificationManager.warning('Something went wrong.', response, 3000)
   }
 
-  const responseGoogle = async ({ tokenId }) => {
+  const handleGoogleLogin = async ({ tokenId }) => {
     progress(async () => {
       try {
         const { data } = await axios.post('/auth/google_login', { tokenId })
-        console.log(data)
-        // setUser({...user, error:'', success: res.data.msg})
-        // localStorage.setItem('firstLogin', true)
+
         dispatch(login(data))
-        // dispatch(dispatchLogin())
-        history.push('/')
       } catch (err) {
         err.response.data.msg && console.log(err.response.data.msg)
-        // setUser({...user, err: err.response.data.msg, success: ''})
       }
     })
   }
 
-  const responseFacebook = async ({ tokeId }) => {}
+  const handleFacebookLogin = async response => {
+    console.log(response)
+
+    const { accessToken, userID } = response
+
+    progress(async () => {
+      try {
+        const { data } = await axios.post('/auth/facebook_login', { accessToken, userID })
+
+        dispatch(login(data))
+      } catch (err) {
+        err.response.data.msg && console.log(err.response.data.msg)
+      }
+    })
+  }
 
   useEffect(() => {
     if (activation_token) activateAccount(activation_token)
@@ -66,10 +75,10 @@ const Login = ({ history }) => {
         <p className='social-login-msg'>Or log In using</p>
         <div className='social-login-icons'>
           <FacebookLogin
-            appId={process.env.REACT_APP_FACEBOOK_CLIENT}
+            appId={285492512995130}
             autoLoad={false}
             fields='name,email,picture'
-            callback={responseFacebook}
+            callback={handleFacebookLogin}
             render={renderProps => (
               <button onClick={renderProps.onClick}>
                 <i className='fa fa-facebook' />
@@ -85,7 +94,7 @@ const Login = ({ history }) => {
                 <i className='fa fa-google' />
               </button>
             )}
-            onSuccess={responseGoogle}
+            onSuccess={handleGoogleLogin}
             onFailure={handleOnFailure}
             cookiePolicy={'single_host_origin'}
           />

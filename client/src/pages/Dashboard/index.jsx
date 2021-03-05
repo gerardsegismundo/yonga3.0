@@ -1,5 +1,3 @@
-import React from 'react'
-
 import { Switch, Route, useRouteMatch, NavLink, Redirect } from 'react-router-dom'
 
 import { useSelector, useDispatch } from 'react-redux'
@@ -10,6 +8,13 @@ import Address from './Address'
 import AccountDetails from './AccountDetails'
 import Avatar from '../../components/Avatar'
 
+const routes = [
+  { name: 'dashboard', path: '' },
+  { name: 'orders', path: '/orders' },
+  { name: 'address / billing details', path: '/address' },
+  { name: 'account details', path: '/account-details' }
+]
+
 const Dashboard = () => {
   const { path, url } = useRouteMatch()
 
@@ -18,22 +23,7 @@ const Dashboard = () => {
 
   const { isAuthenticated } = user
 
-  const routes = [
-    { name: 'dashboard', path: '' },
-    { name: 'orders', path: '/orders' },
-    { name: 'address / billing details', path: '/address' },
-    { name: 'account details', path: '/account-details' }
-  ]
-
-  const handleLogout = () => {
-    progress(() => dispatch(logout()))
-  }
-  /* 
-  if (!user.data.name) {
-    // NotificationManager
-    return <h1>SOMETHING WENT WRONG</h1>
-  }
- */
+  const handleLogout = () => progress(() => dispatch(logout()))
 
   return isAuthenticated && user.data ? (
     <div className='dashboard'>

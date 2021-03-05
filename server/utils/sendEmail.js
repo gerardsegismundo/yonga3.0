@@ -35,10 +35,6 @@ const smtpTransport = nodemailer.createTransport({
   }
 })
 
-const sendMail = async (mailOptions, cb) => {
-  await smtpTransport.sendMail(mailOptions, (err, infor) => cb(err, infor))
-}
-
 const sendEmail = {
   createAccount: ({ name, sendTo, activationURL, cb }) => {
     const mailOptions = {
@@ -72,13 +68,13 @@ const sendEmail = {
           `
     }
 
-    sendMail(mailOptions, cb)
+    smtpTransport.sendMail(mailOptions, (err, infor) => cb(err, infor))
   },
 
-  resetPassword: (name, to, url) => {
+  resetPassword: ({ name, sentTo, resetUrl, cb }) => {
     const mailOptions = {
       from: MAILING_SERVICE_EMAIL,
-      to: to,
+      to: sentTo,
       subject: 'Yonga Account Password Reset',
       html: `
               <div>
@@ -86,7 +82,7 @@ const sendEmail = {
                 <p syle="margin-bottom: 1rem;"> You recently requested to reset your password for your Yonga account. Click the button below to reset it.
                 </p>
                 
-                <a href=${url} style="background: #212121; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display:inline-block;   border-radius: 1px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">Reset your password</a>
+                <a href=${resetUrl} style="background: #212121; text-decoration: none; color: white; padding: 10px 20px; margin: 10px 0; display:inline-block;   border-radius: 1px; box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.75);">Reset your password</a>
 
                 <p style="margin-top: 1rem;">If you did not request a password reset, please let us know. This password reset is only valid for 30 minutes.</p>
 
@@ -97,13 +93,13 @@ const sendEmail = {
 
                 <p>If you're having trouble clicking the password reset button, copy and paste the URL below into your web browser.</p>
 
-                <a style="margin-top: 1rem;color: blue;text-decoration: underline;">${url}</a>
+                <a style="margin-top: 1rem;color: blue;text-decoration: underline;">${resetUrl}</a>
                
               </div>
           `
     }
 
-    sendMail(mailOptions)
+    smtpTransport.sendMail(mailOptions, (err, infor) => cb(err, infor))
   }
 }
 

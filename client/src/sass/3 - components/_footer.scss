@@ -10,6 +10,9 @@ footer.main-footer {
   padding-top: 3rem;
   padding-bottom: 3rem;
 
+  @include media('>tablet') {
+  }
+
   width: 100vw;
   background-color: $white;
   position: relative;
@@ -18,8 +21,8 @@ footer.main-footer {
 
   @include media('>tablet') {
     height: 10rem;
-    padding-top: 8rem;
-    padding-bottom: 8rem;
+    padding-top: calc(8rem + 1.25vw);
+    padding-bottom: calc(8rem + 1.25vw);
     align-items: center;
     flex-direction: row;
   }

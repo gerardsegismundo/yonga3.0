@@ -8,6 +8,7 @@ const { sendEmail, createURL, hashPassword, capitalize } = require('../utils/')
 
 const { google } = require('googleapis')
 const { OAuth2 } = google.auth
+const fetch = require('node-fetch')
 
 const cookieOptions = {
   httpOnly: true,
@@ -43,7 +44,6 @@ exports.register = async (req, res) => {
     name: capitalizedName,
     sendTo: email,
     activationURL,
-    res,
     cb: err => {
       if (err) return res.status(400).json({ msg: 'Register account failed.', error: err })
 
@@ -203,10 +203,17 @@ exports.forgotPassword = async (req, res) => {
   const resetToken = user.getResetToken()
 
   const { name, email, _id } = user
-  const resetURL = createURL.resetPassword(_id, resetToken)
-  sendEmail.resetPassword(name, email, resetURL)
 
-  res.status(200).json({ msg: 'Reset link sent to email.' })
+  sendEmail.resetPassword({
+    name,
+    sentTo: email,
+    resetUrl: createURL.resetPassword(_id, resetToken),
+    cb: err => {
+      if (err) return res.status(400).json({ msg: 'Reset password failed.', error: err })
+
+      res.status(200).json({ msg: 'Reset link sent to email.' })
+    }
+  })
 }
 
 //  @route    GET   /auth/validatereset_token
@@ -245,7 +252,52 @@ exports.resetPassword = async (req, res) => {
 
 //  @route  POST  /auth/facebook_login
 exports.facebookLogin = async (req, res) => {
-  console.log(tokenId)
+  //graph.facebook.com/v2.9/your-facebook-user-id/photos?access_token=your-access-token
+  try {
+    const { accessToken, userID } = req.body
+
+    const graphAPI = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture.type(large)&access_token=${accessToken}`
+
+    const { name, email, picture } = await fetch(graphAPI).then(res => res.json())
+
+    console.log(typeof picture.data.url)
+    console.log(picture.data.url)
+
+    console.log({ name, email, picture })
+    const user = await User.findOne({ email, access_type: 'facebook' })
+
+    let refresh_token
+    let access_token
+
+    if (!user) {
+      const newUser = new User({
+        name,
+        email,
+        avatar: {
+          url: picture.data.url
+        },
+        access_type: 'facebook'
+      })
+
+      await newUser.save()
+
+      refresh_token = newUser.getRefreshToken()
+      access_token = newUser.getAccessToken()
+    } else {
+      refresh_token = user.getRefreshToken()
+      access_token = user.getAccessToken()
+    }
+
+    res.cookie('refreshToken', refresh_token, cookieOptions)
+
+    res.json({
+      refresh_token,
+      access_token,
+      expiresIn: process.env.JWT_EXPIRE_REFRESH
+    })
+  } catch (err) {
+    return res.status(500).json({ msg: err.message })
+  }
 }
 
 //  @route  POST  /auth/twitter_login
