@@ -68,7 +68,7 @@ const Login = ({ history }) => {
 
       <div className='container'>
         <p className='register-msg'>If you have not created an account yet, please register here.</p>
-        <Link to='/account/register' className='register-btn btn'>
+        <Link to='/account/register' className='register-btn light-btn btn'>
           Create an account
         </Link>
 
@@ -76,7 +76,6 @@ const Login = ({ history }) => {
         <div className='social-login-icons'>
           <FacebookLogin
             appId={285492512995130}
-            autoLoad={false}
             fields='name,email,picture'
             callback={handleFacebookLogin}
             render={renderProps => (

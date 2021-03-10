@@ -1,17 +1,12 @@
 import React from 'react'
-
-import addComma from '../utils/helpers/addComma'
-import { ReactComponent as CloseIcon } from '../assets/icons/close.svg'
-
+import { Link } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-
+import NotificationManager from 'react-notifications/lib/NotificationManager'
 import _ from 'lodash'
 
+import { ReactComponent as CloseIcon } from '../assets/icons/close.svg'
 import { removeMany, updateQuantity } from '../redux/actions'
-import { Link } from 'react-router-dom'
-import { slugifyProduct } from '../utils/helpers'
-
-import NotificationManager from 'react-notifications/lib/NotificationManager'
+import { slugifyProduct, addComma } from '../utils/helpers'
 
 const TableCartItem = product => {
   const { _id, name, price, quantity, imageURL, countInStock } = product

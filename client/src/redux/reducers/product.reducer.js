@@ -15,29 +15,12 @@ const productReducer = (state = initialState, { type, payload }) => {
     case 'GET_PRODUCTS':
       return {
         ...state,
-        items: payload
-      }
-
-    case 'FILTER_PRODUCTS':
-      const filter = category => {
-        return state.items.filter(p => p.category.includes(category))
-      }
-
-      const filteredProducts = {
-        children: filter('children'),
-        home: filter('home'),
-        outdoor: filter('outdoor')
-      }
-
-      return {
-        ...state,
-        filteredProducts: filteredProducts
+        items: payload.products,
+        filteredProducts: payload.filteredProducts
       }
 
     case 'RATE_PRODUCT':
-      const productIndex = state.items.findIndex(
-        p => p._id === payload.productId
-      )
+      const productIndex = state.items.findIndex(p => p._id === payload.productId)
 
       return {
         ...state,
@@ -47,7 +30,8 @@ const productReducer = (state = initialState, { type, payload }) => {
           return {
             ...item,
             totalRating: payload.totalRating,
-            ratings: payload.ratings
+
+            ratings: [...payload.ratings]
           }
         })
       }
@@ -86,11 +70,7 @@ const productReducer = (state = initialState, { type, payload }) => {
         ...state,
         selectedProduct: {
           ...state.selectedProduct,
-          comments: [
-            ...state.selectedProduct.comments.filter(
-              c => c._id !== payload.comment_id
-            )
-          ]
+          comments: [...state.selectedProduct.comments.filter(c => c._id !== payload.comment_id)]
         }
       }
 

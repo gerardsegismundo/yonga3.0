@@ -21,13 +21,13 @@ const Checkout = ({ cart, chooseShippingOption }) => {
     name: '',
     companyName: '',
     country: '',
-    houseNumAndStrtName: 'err',
+    houseNumAndStrtName: '',
     apartment: '',
     town: '',
     postcode: '',
     phone: '',
     email: '',
-    addInfo: 'lorem ipsum'
+    addInfo: ''
   })
 
   const [userAgreed, setUserAgreed] = useState(false)

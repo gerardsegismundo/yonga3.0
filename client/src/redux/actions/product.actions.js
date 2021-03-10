@@ -1,68 +1,28 @@
 import axios from 'axios'
 import authAxios from '../../utils/helpers/authAxios'
 
-const Products = (() => {
-  let productsCache = null
+export const getProducts = () => async dispatch => {
+  const { data } = await axios.get('/product')
 
-  const getProductsCache = async dispatch => {
-    if (!productsCache) {
-      const { data } = await axios.get('/product')
+  const { products } = data
 
-      productsCache = data.products
+  const filter = category => products.filter(p => p.category.includes(category))
 
-      dispatch({
-        type: 'GET_PRODUCTS',
-        payload: productsCache
-      })
-    }
-
-    return productsCache
+  const filteredProducts = {
+    children: filter('children'),
+    home: filter('home'),
+    outdoor: filter('outdoor')
   }
 
-  const getProducts = () => async dispatch => {
-    const products = productsCache || (await getProductsCache(dispatch))
+  dispatch({
+    type: 'GET_PRODUCTS',
+    payload: { products, filteredProducts }
+  })
 
-    return products
-  }
+  return products
+}
 
-  const filterProducts = () => async dispatch => {
-    const products = productsCache || (await getProductsCache(dispatch))
-
-    const filter = category => {
-      return products.filter(p => p.category.includes(category))
-    }
-
-    const filteredProducts = {
-      children: filter('children'),
-      home: filter('home'),
-      outdoor: filter('outdoor')
-    }
-
-    dispatch({
-      type: 'FILTER_PRODUCTS',
-      payload: filteredProducts
-    })
-  }
-
-  const findProduct = productName => async dispatch => {
-    const products = productsCache || (await getProductsCache(dispatch))
-
-    const product = products.filter(p => p.name === productName)[0]
-
-    dispatch({
-      type: 'FIND_PRODUCT',
-      payload: product
-    })
-  }
-
-  return {
-    getProducts,
-    filterProducts,
-    findProduct
-  }
-})()
-
-const getProduct = name => async dispatch => {
+export const getProduct = name => async dispatch => {
   try {
     const { data } = await authAxios.get(`/product/${name}`)
 
@@ -72,27 +32,27 @@ const getProduct = name => async dispatch => {
   }
 }
 
-const rateProduct = (productId, rating) => async dispatch => {
+export const rateProduct = (productId, rating) => async dispatch => {
   try {
     const { data } = await authAxios.post('/product/rating', {
       productId,
       rating: parseInt(rating)
     })
 
-    const { ratings, totalRating } = data
+    const { numberOfRatings, ratings, totalRating } = data
 
     dispatch({
       type: 'RATE_PRODUCT',
       payload: { productId, ratings, totalRating }
     })
 
-    return totalRating
+    return { numberOfRatings, totalRating }
   } catch (error) {
     console.log(error)
   }
 }
 
-const addComment = (productId, comment) => async dispatch => {
+export const addComment = (productId, comment) => async dispatch => {
   try {
     const { data } = await authAxios.post(`/product/${productId}/comment`, {
       comment
@@ -110,11 +70,9 @@ const addComment = (productId, comment) => async dispatch => {
   }
 }
 
-const updateComment = (productId, commentId, comment) => async dispatch => {
+export const updateComment = (productId, commentId, comment) => async dispatch => {
   try {
-    const api = `/product/${productId}/comment/${commentId}`
-
-    const { data } = await authAxios.patch(api, {
+    const { data } = await authAxios.patch(`/product/${productId}/comment/${commentId}`, {
       comment
     })
 
@@ -127,7 +85,7 @@ const updateComment = (productId, commentId, comment) => async dispatch => {
   }
 }
 
-const deleteComment = (productId, commentId) => async dispatch => {
+export const deleteComment = (productId, commentId) => async dispatch => {
   try {
     const { data } = await authAxios.delete(`/product/${productId}/comment/${commentId}`)
 
@@ -139,6 +97,3 @@ const deleteComment = (productId, commentId) => async dispatch => {
     console.log(error.response)
   }
 }
-
-export const { getProducts, filterProducts, findProduct } = Products
-export { getProduct, rateProduct, addComment, updateComment, deleteComment }

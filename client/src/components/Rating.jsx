@@ -19,12 +19,13 @@ const Rating = ({ productId, rating, setHoverRating, setCurrentRating }) => {
 
   const handleOnClick = e => {
     progress(async () => {
-      const rating = await dispatch(rateProduct(productId, e.currentTarget.dataset.value))
+      const { numberOfRatings, totalRating } = await dispatch(rateProduct(productId, e.currentTarget.dataset.value))
 
-      setCurrentRating(rating)
+      console.log({ numberOfRatings, totalRating })
+      setCurrentRating({ numberOfRatings, totalRating })
+
+      NotificationManager.success('Thank you for rating our product!')
     })
-
-    NotificationManager.success('Thank you for rating our product!')
   }
 
   return (

@@ -16,7 +16,7 @@ import { progress } from './utils/helpers'
 import { landingAnimation } from './utils/animations'
 
 import { useDispatch, useSelector } from 'react-redux'
-import { getCurrentUser, filterProducts, getProducts } from './redux/actions'
+import { getCurrentUser, getProducts } from './redux/actions'
 
 const routes = [
   { path: '/', component: Home },
@@ -32,6 +32,8 @@ const routes = [
   { path: '/account/dashboard', component: Dashboard, exact: false },
   { path: null, component: NotFound, exact: false }
 ]
+
+const tl = gsap.timeline()
 
 const App = () => {
   const dispatch = useDispatch()
@@ -51,17 +53,14 @@ const App = () => {
 
   const scrollDirection = useObservable(watchScroll, 'Up')
 
-  const loadProducts = useRef(() => {
-    dispatch(getProducts())
-    dispatch(filterProducts())
-  })
+  const fetchProductsRef = useRef(() => dispatch(getProducts()))
 
   const getCurrentUserRef = useRef(() => {
     progress(() => dispatch(getCurrentUser(localStorage.access_token)))
   })
 
   useEffect(() => {
-    loadProducts.current()
+    fetchProductsRef.current()
 
     gsap.to('body', { css: { visibility: 'visible' } })
 
@@ -76,29 +75,17 @@ const App = () => {
 
   useResponsiveVH()
 
-  const tl = gsap.timeline()
-
   useEffect(() => {
     if (!navMenuIsOpen) {
-      if (scrollDirection === 'Up') {
-        tl.to('.main-header', {
-          autoAlpha: 1,
-          duration: 0.3,
-          y: 0
-        })
+      const params = scrollDirection === 'Up' ? [1, 0.3, 0] : [0, 0.3, -50]
+
+      const animateHeader = ([autoAlpha, duration, y]) => {
+        tl.to('.main-header', { autoAlpha, duration, y })
       }
 
-      if (scrollDirection === 'Down') {
-        tl.to('.main-header', {
-          autoAlpha: 0,
-          duration: 0.3,
-          y: -50
-        })
-      }
+      animateHeader(params)
     }
-
-    // eslint-disable-next-line
-  }, [scrollDirection])
+  }, [navMenuIsOpen, scrollDirection])
 
   return (
     <Layout>

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import CartItem from './CartItem'
 import { addComma } from '../utils/helpers'
@@ -21,11 +21,15 @@ const CartMenu = ({ handleToggleCartMenu, cartMenuRef }) => {
     history.push('/checkout')
   }
 
+  const cartIsEmpty = useMemo(() => {
+    return products.length > 0
+  }, [products])
+
   return (
     <div className='cart-menu' ref={cartMenuRef}>
       <i className='fa fa-close' onClick={handleToggleCartMenu} />
       <div className='cart-items-container'>
-        {products && products.length > 0 ? (
+        {cartIsEmpty ? (
           products.map(item => <CartItem {...item} key={item._id} />)
         ) : (
           <p className='empty-msg'>Your cart is empty!</p>
@@ -33,10 +37,10 @@ const CartMenu = ({ handleToggleCartMenu, cartMenuRef }) => {
       </div>
 
       <div className='total-container'>
-        <button className='view-cart' onClick={viewCart}>
+        <button className='view-cart' onClick={viewCart} disabled={!cartIsEmpty}>
           View Cart
         </button>
-        <button className='check-out' onClick={handleCheckout}>
+        <button className='check-out' onClick={handleCheckout} disabled={!cartIsEmpty}>
           Checkout
         </button>
         <p className='sub-total'>

@@ -33,9 +33,7 @@ exports.rateProduct = async (req, res) => {
 
   if (!product) return res.status(404).json({ msg: 'Product not found.' })
 
-  const ratingIndex = product.ratings.findIndex(
-    r => r.user.toString() === req.user._id.toString()
-  )
+  const ratingIndex = product.ratings.findIndex(r => r.user.toString() === req.user._id.toString())
 
   const newRating = {
     rating,
@@ -43,24 +41,19 @@ exports.rateProduct = async (req, res) => {
   }
 
   // If already rated
-  if (ratingIndex !== 1) {
-    product.ratings = [
-      ...product.ratings.slice(0, ratingIndex),
-      newRating,
-      ...product.ratings.slice(ratingIndex + 1)
-    ]
+  if (ratingIndex !== -1) {
+    product.ratings = [...product.ratings.slice(0, ratingIndex), newRating, ...product.ratings.slice(ratingIndex + 1)]
   } else {
     product.ratings.push(newRating)
   }
 
-  product.totalRating =
-    product.ratings.reduce((acc, p) => p.rating + acc, 0) /
-    product.ratings.length
+  product.totalRating = product.ratings.reduce((acc, p) => p.rating + acc, 0) / product.ratings.length
 
   await product.save()
 
   res.status(201).json({
-    msg: 'Resouce updated successfully.',
+    msg: 'Resource updated successfully.',
+    numberOfRatings: product.ratings.length,
     ratings: product.ratings,
     totalRating: product.totalRating
   })
@@ -73,14 +66,10 @@ exports.addComment = async (req, res) => {
 
   if (!product) return res.status(404).json({ message: 'Product not found' })
 
-  const alreadyCommented = product.comments.find(
-    r => r.user.toString() === req.user._id.toString()
-  )
+  const alreadyCommented = product.comments.find(r => r.user.toString() === req.user._id.toString())
 
   if (alreadyCommented) {
-    return res
-      .status(400)
-      .json({ message: 'You have already commented on this product.' })
+    return res.status(400).json({ message: 'You have already commented on this product.' })
   }
 
   product.comments.push({
@@ -90,9 +79,7 @@ exports.addComment = async (req, res) => {
 
   const result = await product.save()
 
-  const { _id, comment, user, createdAt } = result.comments[
-    result.comments.length - 1
-  ]
+  const { _id, comment, user, createdAt } = result.comments[result.comments.length - 1]
 
   const newComment = {
     _id,
@@ -117,9 +104,7 @@ exports.updateComment = async (req, res) => {
   const commentIndex = comments.findIndex(c => c._id.toString() === comment_id)
 
   if (commentIndex < 0) {
-    return res
-      .status(404)
-      .json({ msg: `No comment with the id of ${req.user._id}` })
+    return res.status(404).json({ msg: `No comment with the id of ${req.user._id}` })
   }
 
   if (!comments[commentIndex].user._id === req.user._id) {
@@ -132,11 +117,7 @@ exports.updateComment = async (req, res) => {
   const result = await Product.findByIdAndUpdate(
     product_id,
     {
-      comments: [
-        ...comments.slice(0, commentIndex),
-        updatedComment,
-        ...comments.slice(commentIndex + 1)
-      ]
+      comments: [...comments.slice(0, commentIndex), updatedComment, ...comments.slice(commentIndex + 1)]
     },
     { new: true }
   )

@@ -13,8 +13,8 @@ import CommentSection from '../components/CommentSection'
 
 const Product = () => {
   const dispatch = useDispatch()
-  const { selectedProduct } = useSelector(({ products }) => products)
   const { isAuthenticated } = useSelector(({ user }) => user)
+  const { selectedProduct } = useSelector(({ products }) => products)
 
   const { _id, name, imageURL, countInStock } = selectedProduct
   const { description, category, price, totalRating, comments, ratings } = selectedProduct
@@ -54,11 +54,17 @@ const Product = () => {
     NotificationManager.success(`${_.capitalize(productName)} x ${quantity} has been added to your cart.`)
   }
 
-  const [currentRating, setCurrentRating] = useState(totalRating)
+  const [currentRating, setCurrentRating] = useState({ numberOfRatings: 0, totalRating: 0 })
 
+  // useEffect(() => {
+  //   setCurrentRating({ ...currentRating, totalRating })
+  // }, [currentRating, totalRating])
   useEffect(() => {
-    setCurrentRating(totalRating)
-  }, [totalRating])
+    if (ratings) {
+      console.log(ratings.length)
+      setCurrentRating({ numberOfRatings: ratings.length, totalRating })
+    }
+  }, [ratings, totalRating])
 
   const [isHovering, setIsHovering] = useState(false)
   const [hoverRating, setHoverRating] = useState(0)
@@ -77,7 +83,7 @@ const Product = () => {
               data-is-authenticated={isAuthenticated}
             >
               <Rating
-                rating={isHovering && isAuthenticated ? hoverRating : currentRating}
+                rating={isHovering && isAuthenticated ? hoverRating : currentRating.totalRating}
                 setHoverRating={setHoverRating}
                 setCurrentRating={setCurrentRating}
                 productId={_id}
@@ -86,7 +92,9 @@ const Product = () => {
               {isHovering && isAuthenticated ? (
                 <span>{`Rate Product (${hoverRating}/5)`}</span>
               ) : (
-                <span>({`${ratings && ratings.length} customer${ratings && ratings.length > 1 && `s`} rating`})</span>
+                <span>
+                  ({`${currentRating.numberOfRatings} customer${currentRating.numberOfRatings > 1 ? `s` : ''} rating`})
+                </span>
               )}
             </div>
             <p className='description'>{description}</p>

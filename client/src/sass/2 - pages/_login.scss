@@ -1,6 +1,7 @@
 .login {
   color: $color-dark-1;
   padding: 3rem 0;
+  @include absCenter;
 
   .login-heading {
     letter-spacing: 0.1rem;
@@ -36,6 +37,8 @@
       color: $color-dark;
       padding: 0.75rem 1rem;
       border: 1px solid rgba($color-dark-5, 0.9);
+      width: 40.5rem;
+      max-width: 80vw;
 
       &:focus,
       &:active {

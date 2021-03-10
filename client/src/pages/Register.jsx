@@ -69,13 +69,12 @@ const Register = () => {
         try {
           const payload = _.omit(form, ['confirmPassword'])
 
-          const { data } = await axios.post('/auth/register', payload)
+          await axios.post('/auth/register', payload)
 
-          console.log(data)
-          console.log('TAE!!!')
-          // NotificationManager.success(`Your registration confirmation has been sent to ${form.email}.`, 'Email Sent.')
+          // ** ---- NEED TO FIX INVALID GRANT -- reregister API KEY. ----- ** //
+          NotificationManager.success(`Your registration confirmation has been sent to ${form.email}.`, 'Email Sent.')
 
-          // clearForm()
+          clearForm()
         } catch (error) {
           console.error(error)
 
@@ -146,11 +145,11 @@ const Register = () => {
           disabled={isLoading}
         />
         {error.confirmPassword && <span className='invalid-msg'>{error.confirmPassword}</span>}
-        <button className='register-btn' disabled={isLoading}>
+        <button className='register-btn dark-btn' disabled={isLoading}>
           create account
         </button>
 
-        <Link to='/account/login' className='btn'>
+        <Link to='/account/login' className='return-btn light-btn btn'>
           Return to Login
         </Link>
       </form>
