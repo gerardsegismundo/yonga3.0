@@ -6,7 +6,7 @@ import { of, fromEvent, animationFrameScheduler } from 'rxjs'
 import { distinctUntilChanged, filter, map, pairwise, switchMap, throttleTime } from 'rxjs/operators'
 import { useObservable } from 'rxjs-hooks'
 
-import { Home, Login, Register, Category, Cart, Checkout } from './pages'
+import { Home, Login, Register, Category, Cart, Checkout, About, Contact, Terms } from './pages'
 import { ForgotPassword, ResetPassword, Dashboard, NotFound, OrderReceived, Product } from './pages'
 
 import Layout from './layouts/Layout'
@@ -25,6 +25,9 @@ const routes = [
   { path: '/account/forgotpassword', component: ForgotPassword },
   { path: '/account/resetpassword/:reset_token?', component: ResetPassword },
   { path: '/cart', component: Cart },
+  { path: '/about', component: About },
+  { path: '/contact', component: Contact },
+  { path: '/terms', component: Terms },
   { path: '/checkout', component: Checkout },
   { path: '/order-received', component: OrderReceived },
   { path: '/product-category/:category', component: Category },

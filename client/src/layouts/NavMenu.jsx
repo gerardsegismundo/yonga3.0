@@ -15,7 +15,7 @@ const links = [
   [
     { name: 'cart', path: '/cart' },
     { name: 'checkout', path: '/checkout' },
-    { name: 'terms & conditions', path: '/terms-and-conditions' },
+    { name: 'terms & conditions', path: '/terms' },
     { name: 'privacy policy', path: '/privacy-policy' }
   ]
 ]
@@ -56,10 +56,10 @@ const MenuContent = () => {
         <h2>©&nbsp;&nbsp;&nbsp;Yonga</h2>
         <ul>
           <li>
-            <Link to='/terms-and-conditions'>terms & conditions</Link>
+            <Link to='/terms'>terms & conditions</Link>
           </li>
           <li>
-            <Link to='/privacy-policy'>privacy policy</Link>
+            <Link to='/terms'>privacy policy</Link>
           </li>
         </ul>
       </div>

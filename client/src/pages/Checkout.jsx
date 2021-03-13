@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import Paypal from '../components/Paypal'
 import { NotificationManager } from 'react-notifications'
 import { round } from 'lodash'
@@ -12,6 +13,7 @@ import BillingDetailsInputGroup from '../components/BillingDetailsInputGroup'
 import { chooseShippingOption } from '../redux/actions'
 import { progress, removeErrorOnChange, addComma } from '../utils/helpers'
 import { validateBilling } from '../utils/validations'
+import CartIsEmpty from '../components/CartIsEmpty'
 
 const Checkout = ({ cart, chooseShippingOption }) => {
   const history = useHistory()
@@ -101,6 +103,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
   }
 
   const handleOnCancel = () => setIsFormDisabled(false)
+
+  if (products && products.length < 1) {
+    return <CartIsEmpty />
+  }
 
   return (
     <div className='checkout'>

@@ -1,11 +1,14 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import SocialIcons from './SocialIcons'
 
 const Footer = () => {
+  const location = useLocation()
+
   return (
     <>
-      <hr className='footer-top-border' />
+      {/* Hide top border at home page */}
+      <hr className='footer-top-border' style={{ borderColor: location.pathname === '/' && 'transparent' }} />
       <footer className='main-footer'>
         <div className='footer-menu-1'>
           <Link to='/product-category/children'>children</Link>
