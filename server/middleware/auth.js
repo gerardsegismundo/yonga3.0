@@ -30,3 +30,11 @@ exports.protect = async (req, res, next) => {
     }
   }
 }
+
+exports.optionalAuthentication = (req, _res, next) => {
+  if (!req.headers.authorization) {
+    next()
+  }
+
+  this.protect()
+}

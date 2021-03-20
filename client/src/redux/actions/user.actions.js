@@ -70,3 +70,5 @@ export const updateAvatar = (file, deleteId) => async dispatch => {
     console.log(error.response)
   }
 }
+
+export const checkout = payload => async dispatch => {}

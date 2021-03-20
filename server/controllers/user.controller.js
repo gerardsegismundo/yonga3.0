@@ -17,6 +17,13 @@ exports.updateUser = async (req, res) => {
   res.json({ user })
 }
 
+//  @route    POST  user/checkout
+//  @access   PRIVATE
+exports.checkout = async (req, res) => {
+  console.log('CHEKCTOUT')
+  res.send(req.body)
+}
+
 //  @route    POST  user/upload_avatar
 //  @access   PRIVATE
 exports.uploadAvatar = async (req, res) => {

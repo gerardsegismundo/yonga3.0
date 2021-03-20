@@ -16,7 +16,6 @@ const BillingDetailsInputGroup = props => {
     if (isAuthenticated && data) {
       setForm({ ...form, ...data })
     }
-
     // eslint-disable-next-line
   }, [isAuthenticated, data])
 

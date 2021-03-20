@@ -54,7 +54,7 @@ const userReducer = (state = initialState, { type, payload }) => {
     case 'UPDATE_USER':
       return {
         ...state,
-        data: payload
+        data: { ...state.data, ...payload.user }
       }
 
     case 'UPDATE_AVATAR':

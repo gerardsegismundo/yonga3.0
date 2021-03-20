@@ -5,6 +5,8 @@ import { updateUser } from '../../redux/actions'
 
 import { useDispatch } from 'react-redux'
 import { progress } from '../../utils/helpers'
+import { NotificationManager } from 'react-notifications'
+import { fadeBillingDetails } from '../../utils/animations'
 
 const Address = () => {
   const dispatch = useDispatch()
@@ -21,7 +23,6 @@ const Address = () => {
     email: ''
   })
 
-  // eslint-disable-next-line
   const [error, setError] = useState({
     name: '',
     companyName: '',
@@ -44,9 +45,13 @@ const Address = () => {
   const handleOnSubmit = e => {
     e.preventDefault()
 
-    progress(() => {
-      dispatch(updateUser(form))
-    })
+    fadeBillingDetails(() =>
+      progress(() => {
+        dispatch(updateUser(form))
+
+        NotificationManager.success('Your billing details has been updated.', 'Success.')
+      })
+    )
   }
 
   return (

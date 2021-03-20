@@ -8,27 +8,22 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: [true, 'Please add a name']
     },
-
     email: {
       type: String,
       required: [true, 'Please add an email'],
       match: [/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/, 'Please add a valid email']
     },
-
     isAdmin: {
       type: Boolean,
       default: false
     },
-
     access_type: {
       type: String
     },
-
     password: {
       type: String,
       minlength: 6
     },
-
     avatar: {
       url: {
         type: String
@@ -37,7 +32,6 @@ const UserSchema = new mongoose.Schema(
         type: String
       }
     },
-
     companyName: {
       type: String
     },
@@ -58,7 +52,8 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String
-    }
+    },
+    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ordered' }]
   },
   { timestamps: true }
 )

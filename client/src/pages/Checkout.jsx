@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { Link } from 'react-router-dom'
+// import { Link } from 'react-router-dom'
 import Paypal from '../components/Paypal'
 import { NotificationManager } from 'react-notifications'
 import { round } from 'lodash'
@@ -14,6 +14,7 @@ import { chooseShippingOption } from '../redux/actions'
 import { progress, removeErrorOnChange, addComma } from '../utils/helpers'
 import { validateBilling } from '../utils/validations'
 import CartIsEmpty from '../components/CartIsEmpty'
+import { fadeBillingDetails } from '../utils/animations'
 
 const Checkout = ({ cart, chooseShippingOption }) => {
   const history = useHistory()
@@ -88,6 +89,7 @@ const Checkout = ({ cart, chooseShippingOption }) => {
 
   // Billing details validation
   const handleConfirmDetails = () => {
+    fadeBillingDetails()
     progress(() => {
       let invalidDeets = validateBilling(form)
 
@@ -102,7 +104,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
     })
   }
 
-  const handleOnCancel = () => setIsFormDisabled(false)
+  const handleOnCancel = () => {
+    fadeBillingDetails()
+    setIsFormDisabled(false)
+  }
 
   if (products && products.length < 1) {
     return <CartIsEmpty />

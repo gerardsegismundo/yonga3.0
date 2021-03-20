@@ -108,50 +108,46 @@ exports.login = async (req, res) => {
 
 // @route POST  /auth/google_login
 exports.googleLogin = async (req, res) => {
-  try {
-    const { tokenId } = req.body
+  const { tokenId } = req.body
 
-    const client = new OAuth2(process.env.MAILING_SERVICE_CLIENT_ID)
+  const client = new OAuth2(process.env.MAILING_SERVICE_CLIENT_ID)
 
-    const verify = await client.verifyIdToken({ idToken: tokenId, audience: process.env.MAILING_SERVICE_CLIENT_ID })
+  const verify = await client.verifyIdToken({ idToken: tokenId, audience: process.env.MAILING_SERVICE_CLIENT_ID })
 
-    const { email_verified, email, name, picture } = verify.payload
-    if (!email_verified) return res.status(400).json({ msg: 'Email verification failed.' })
+  const { email_verified, email, name, picture } = verify.payload
+  if (!email_verified) return res.status(400).json({ msg: 'Email verification failed.' })
 
-    const user = await User.findOne({ email, access_type: 'google' })
+  const user = await User.findOne({ email, access_type: 'google' })
 
-    let refresh_token
-    let access_token
+  let refresh_token
+  let access_token
 
-    if (!user) {
-      const newUser = new User({
-        name,
-        email,
-        avatar: {
-          url: picture
-        },
-        access_type: 'google'
-      })
-
-      await newUser.save()
-
-      refresh_token = newUser.getRefreshToken()
-      access_token = newUser.getAccessToken()
-    } else {
-      refresh_token = user.getRefreshToken()
-      access_token = user.getAccessToken()
-    }
-
-    res.cookie('refreshToken', refresh_token, cookieOptions)
-
-    res.json({
-      refresh_token,
-      access_token,
-      expiresIn: process.env.JWT_EXPIRE_REFRESH
+  if (!user) {
+    const newUser = new User({
+      name,
+      email,
+      avatar: {
+        url: picture
+      },
+      access_type: 'google'
     })
-  } catch (err) {
-    return res.status(500).json({ msg: err.message })
+
+    await newUser.save()
+
+    refresh_token = newUser.getRefreshToken()
+    access_token = newUser.getAccessToken()
+  } else {
+    refresh_token = user.getRefreshToken()
+    access_token = user.getAccessToken()
   }
+
+  res.cookie('refreshToken', refresh_token, cookieOptions)
+
+  res.json({
+    refresh_token,
+    access_token,
+    expiresIn: process.env.JWT_EXPIRE_REFRESH
+  })
 }
 
 //  @route   GET  /auth/access_token
@@ -163,13 +159,9 @@ exports.getAccessToken = async (req, res) => {
   jwt.verify(refresh_token, process.env.JWT_SECRET_REFRESH, async (err, claims) => {
     if (err) return res.status(401).json({ msg: err.response })
 
-    try {
-      const user = await User.findById(claims.id)
-      const access_token = user.getAccessToken()
-      res.json({ access_token })
-    } catch (error) {
-      res.status(400).json({ error })
-    }
+    const user = await User.findById(claims.id)
+    const access_token = user.getAccessToken()
+    res.json({ access_token })
   })
 }
 
@@ -252,52 +244,47 @@ exports.resetPassword = async (req, res) => {
 
 //  @route  POST  /auth/facebook_login
 exports.facebookLogin = async (req, res) => {
-  //graph.facebook.com/v2.9/your-facebook-user-id/photos?access_token=your-access-token
-  try {
-    const { accessToken, userID } = req.body
+  const { accessToken, userID } = req.body
 
-    const graphAPI = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture.type(large)&access_token=${accessToken}`
+  const graphAPI = `https://graph.facebook.com/v2.9/${userID}/?fields=id,name,email,picture.type(large)&access_token=${accessToken}`
 
-    const { name, email, picture } = await fetch(graphAPI).then(res => res.json())
+  const { name, email, picture } = await fetch(graphAPI).then(res => res.json())
 
-    console.log(typeof picture.data.url)
-    console.log(picture.data.url)
+  console.log(typeof picture.data.url)
+  console.log(picture.data.url)
 
-    console.log({ name, email, picture })
-    const user = await User.findOne({ email, access_type: 'facebook' })
+  console.log({ name, email, picture })
+  const user = await User.findOne({ email, access_type: 'facebook' })
 
-    let refresh_token
-    let access_token
+  let refresh_token
+  let access_token
 
-    if (!user) {
-      const newUser = new User({
-        name,
-        email,
-        avatar: {
-          url: picture.data.url
-        },
-        access_type: 'facebook'
-      })
-
-      await newUser.save()
-
-      refresh_token = newUser.getRefreshToken()
-      access_token = newUser.getAccessToken()
-    } else {
-      refresh_token = user.getRefreshToken()
-      access_token = user.getAccessToken()
-    }
-
-    res.cookie('refreshToken', refresh_token, cookieOptions)
-
-    res.json({
-      refresh_token,
-      access_token,
-      expiresIn: process.env.JWT_EXPIRE_REFRESH
+  if (!user) {
+    const newUser = new User({
+      name,
+      email,
+      avatar: {
+        url: picture.data.url
+      },
+      access_type: 'facebook'
     })
-  } catch (err) {
-    return res.status(500).json({ msg: err.message })
+
+    await newUser.save()
+
+    refresh_token = newUser.getRefreshToken()
+    access_token = newUser.getAccessToken()
+  } else {
+    refresh_token = user.getRefreshToken()
+    access_token = user.getAccessToken()
   }
+
+  res.cookie('refreshToken', refresh_token, cookieOptions)
+
+  res.json({
+    refresh_token,
+    access_token,
+    expiresIn: process.env.JWT_EXPIRE_REFRESH
+  })
 }
 
 //  @route  POST  /auth/twitter_login

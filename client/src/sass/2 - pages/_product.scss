@@ -36,7 +36,7 @@
       .feedback-wrapper {
         display: flex;
         align-content: center;
-        height: 2rem;
+        flex-wrap: wrap;
 
         &[data-is-authenticated='false'] {
           pointer-events: none;

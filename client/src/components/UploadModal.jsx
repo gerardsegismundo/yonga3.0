@@ -29,7 +29,7 @@ const UploadModal = () => {
   const [zoom, setZoom] = useState(1)
   const [croppedAreaPixels, setCroppedAreaPixels] = useState(null)
 
-  const handleOnCropComplete = (croppedArea, croppedAreaPixels) => {
+  const handleOnCropComplete = (_croppedArea, croppedAreaPixels) => {
     setCroppedAreaPixels(croppedAreaPixels)
   }
 

@@ -7,8 +7,7 @@ const useCartToggleAnimation = tl => {
       duration: 0.3,
       autoAlpha: 0
     }).reverse()
-    // eslint-disable-next-line
-  }, [])
+  }, [tl])
 }
 
 export default useCartToggleAnimation

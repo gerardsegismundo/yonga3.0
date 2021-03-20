@@ -17,12 +17,12 @@ const Terms = () => {
         <p className='details'>
           150-0001 3-25-18-202
           <br />
-          Jingumae, Shibuya-ku, Tokyo
+          Conomi, Cocoyashi Village
         </p>
       </div>
       <div className='row'>
         <p className='label'>Contact Email</p>
-        <Link>information@yonga.com</Link>
+        <Link to='/terms'>information@yonga.com</Link>
       </div>
       <div className='row'>
         <p className='label'>Necessary charges other than the product price</p>
@@ -38,7 +38,7 @@ const Terms = () => {
       <div className='row'>
         <p className='label'>Returns / Exchanges</p>
         <p className='details'>
-          Please check <Link>about returns and exchanges.</Link>
+          Please check <Link to='/terms'>about returns and exchanges.</Link>
         </p>
       </div>
       <div className='row'>

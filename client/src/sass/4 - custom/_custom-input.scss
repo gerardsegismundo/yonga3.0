@@ -1,7 +1,7 @@
 .custom-input-group {
   position: relative;
   margin-top: 1rem;
-  transition: margin 0.3s;
+  transition: margin 0.1s;
 
   &[data-is-active='true'] {
     margin-top: 2.175rem;
@@ -31,7 +31,7 @@
       box-shadow: 0px 0px 2px $color-dark-5;
 
       & + label {
-        transition: all 0.5s;
+        transition: all 0.25s;
         @include validLabel;
       }
     }
