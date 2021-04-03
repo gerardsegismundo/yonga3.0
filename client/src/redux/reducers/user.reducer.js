@@ -1,12 +1,7 @@
 const initialState = {
   isAuthenticated: false,
   access_token: '',
-  data: {
-    avatar: {
-      url: '',
-      public_id: ''
-    }
-  }
+  data: null
 }
 
 if (localStorage.access_token) {
@@ -28,7 +23,6 @@ const userReducer = (state = initialState, { type, payload }) => {
     case 'GET_CURRENT_USER': {
       return {
         ...state,
-
         data: { ...payload }
       }
     }

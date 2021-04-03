@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
 import Dropdown from 'react-dropdown'
 import countryList from 'react-select-country-list'
@@ -13,18 +13,13 @@ const BillingDetailsInputGroup = props => {
   const { isAuthenticated, data } = useSelector(({ user }) => user)
 
   useEffect(() => {
-    if (isAuthenticated && data) {
-      setForm({ ...form, ...data })
-    }
+    if (isAuthenticated && data) setForm({ ...form, ...data })
+
     // eslint-disable-next-line
   }, [isAuthenticated, data])
 
-  const handleOnChangeCountry = e => {
-    setForm({
-      ...form,
-      country: e.label
-    })
-  }
+  const handleOnChangeCountry = e => setForm({ ...form, country: e.label })
+
   return (
     <div className='billing-details--input-group'>
       <h2 className='billing-header'>Billing details</h2>
@@ -38,18 +33,20 @@ const BillingDetailsInputGroup = props => {
         disabled={isFormDisabled}
       />
 
-      <CustomInput
-        label='Company name (optional)'
-        name='companyName'
-        value={form.companyName}
-        onChange={handleOnChange}
-        error={error.companyName}
-        disabled={isFormDisabled}
-        required={false}
-      />
+      {!isFormDisabled || form.companyName ? (
+        <CustomInput
+          label='Company name (optional)'
+          name='companyName'
+          value={form.companyName}
+          onChange={handleOnChange}
+          error={error.companyName}
+          disabled={isFormDisabled}
+          required={false}
+        />
+      ) : null}
 
       <div className='dropdown-wrapper' data-is-disabled={isFormDisabled}>
-        <label htmlFor='country'>Country</label>
+        {form.country && <label htmlFor='country'>Country</label>}
 
         <Dropdown
           options={countryOptions}
@@ -71,15 +68,17 @@ const BillingDetailsInputGroup = props => {
         disabled={isFormDisabled}
       />
 
-      <CustomInput
-        label='Apartment, suite, unit, etc. (optional)'
-        name='apartment'
-        value={form.apartment}
-        onChange={handleOnChange}
-        error={error.apartment}
-        required={false}
-        disabled={isFormDisabled}
-      />
+      {!isFormDisabled || form.apartment ? (
+        <CustomInput
+          label='Apartment, suite, unit, etc. (optional)'
+          name='apartment'
+          value={form.apartment}
+          onChange={handleOnChange}
+          error={error.apartment}
+          required={false}
+          disabled={isFormDisabled}
+        />
+      ) : null}
 
       <CustomInput
         label='Town/City'

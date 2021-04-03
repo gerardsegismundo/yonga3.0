@@ -9,7 +9,7 @@
 
   .dropdown-wrapper {
     &[data-is-disabled='false'] {
-      margin: 0.75rem 0 2rem 0;
+      margin-top: 0.75rem;
 
       label[for='country'] {
         opacity: 0.65;

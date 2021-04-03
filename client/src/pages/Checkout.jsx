@@ -1,23 +1,25 @@
 import React, { useState } from 'react'
 import { useHistory } from 'react-router-dom'
-// import { Link } from 'react-router-dom'
 import Paypal from '../components/Paypal'
 import { NotificationManager } from 'react-notifications'
 import { round } from 'lodash'
 import 'react-dropdown/style.css'
 
-import { connect } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import CustomTextArea from '../components/custom/CustomTextArea'
 import BillingDetailsInputGroup from '../components/BillingDetailsInputGroup'
 
-import { chooseShippingOption } from '../redux/actions'
+import { chooseShippingOption, checkout } from '../redux/actions'
+
 import { progress, removeErrorOnChange, addComma } from '../utils/helpers'
 import { validateBilling } from '../utils/validations'
 import CartIsEmpty from '../components/CartIsEmpty'
-import { fadeBillingDetails } from '../utils/animations'
 
-const Checkout = ({ cart, chooseShippingOption }) => {
+const Checkout = () => {
   const history = useHistory()
+  const dispatch = useDispatch()
+
+  const { cart, user } = useSelector(data => data)
   const { products, shippingOption } = cart
 
   const [form, setForm] = useState({
@@ -33,7 +35,8 @@ const Checkout = ({ cart, chooseShippingOption }) => {
     addInfo: ''
   })
 
-  const [userAgreed, setUserAgreed] = useState(false)
+  // const [userAgreed, setUserAgreed] = useState(false)
+  const [userAgreed, setUserAgreed] = useState(true)
 
   const [error, setError] = useState({
     name: '',
@@ -48,70 +51,83 @@ const Checkout = ({ cart, chooseShippingOption }) => {
     addInfo: ''
   })
 
-  const [paymentOption, setPaymentOption] = useState(null)
+  // const [paymentMethod, setPaymentMethod] = useState(null)
+  const [paymentMethod, setPaymentMethod] = useState('direct_bank_transfer')
 
-  const [isFormDisabled, setIsFormDisabled] = useState(false)
+  // const [isFormDisabled, setIsFormDisabled] = useState(false)
+  const [isFormDisabled, setIsFormDisabled] = useState(true)
 
   let { totalPrice } = cart
-  let subtotal = totalPrice
+
+  let subtotal = round(totalPrice, 2)
 
   // Adds flat_rate $10 to total price
-  totalPrice = shippingOption === 'flat_rate' ? parseFloat(totalPrice) + 10 : totalPrice
-
-  totalPrice = round(totalPrice, 2)
+  totalPrice = round(shippingOption === 'flat_rate' ? totalPrice + 10 : totalPrice, 2)
 
   const handleOnChange = e => {
-    if (e.target.name === 'paymentOption') {
-      return setPaymentOption(e.target.value)
-    }
+    if (e.target.name === 'paymentMethod') return setPaymentMethod(e.target.value)
 
     removeErrorOnChange(e, error, setError)
 
-    setForm({
-      ...form,
-      [e.target.name]: e.target.value
-    })
+    setForm({ ...form, [e.target.name]: e.target.value })
   }
 
-  const handleChooseOption = e => chooseShippingOption(e.target.name)
+  const handleChooseOption = e => dispatch(chooseShippingOption(e.target.name))
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     if (!userAgreed) {
       return NotificationManager.error('You must agree to website terms and conditions before checkout.')
     }
 
-    if (paymentOption !== 'paypal') {
+    if (paymentMethod !== 'paypal') {
       console.log('regular payment')
     }
 
-    history.push('/order-received')
+    const cartProducts = cart.products.map(({ name, imageURL, price, quantity }) => ({
+      imageURL,
+      name,
+      price,
+      quantity
+    }))
+
+    const checkOutDetails = {
+      cartProducts,
+      paymentMethod: paymentMethod.replaceAll('_', ' '),
+      shippingOption: shippingOption.replaceAll('_', ' '),
+      totalPrice,
+      addInfo: form.addInfo
+    }
+
+    const nonRegisteredUserDetails = !user.isAuthenticated ? form : null
+
+    if (nonRegisteredUserDetails) {
+      delete nonRegisteredUserDetails.addInfo
+    }
+
+    const checkOutSuccess = await dispatch(checkout({ nonRegisteredUserDetails, checkOutDetails }))
+
+    if (checkOutSuccess) {
+      NotificationManager.success('Your order has been received.', 'Thank you!')
+      history.push('/order-received')
+    } else {
+      NotificationManager.error('Something went wrong. Try again later..', 'Ooops.')
+    }
   }
 
   // Billing details validation
   const handleConfirmDetails = () => {
-    fadeBillingDetails()
     progress(() => {
       let invalidDeets = validateBilling(form)
 
-      if (invalidDeets) {
-        return setError({
-          ...error,
-          ...invalidDeets
-        })
-      }
+      if (invalidDeets) return setError({ ...error, ...invalidDeets })
 
       setIsFormDisabled(true)
     })
   }
 
-  const handleOnCancel = () => {
-    fadeBillingDetails()
-    setIsFormDisabled(false)
-  }
+  const handleOnCancel = () => setIsFormDisabled(false)
 
-  if (products && products.length < 1) {
-    return <CartIsEmpty />
-  }
+  if (products && products.length < 1) return <CartIsEmpty />
 
   return (
     <div className='checkout'>
@@ -153,6 +169,7 @@ const Checkout = ({ cart, chooseShippingOption }) => {
                 <td>
                   {i.name} &times; {i.quantity}
                 </td>
+                {/* <td>${addComma(round(i.quantity * i.price, 2))}</td> */}
                 <td>${addComma(round(i.quantity * i.price, 2))}</td>
               </tr>
             ))}
@@ -223,10 +240,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
             <li>
               <input
                 type='radio'
-                name='paymentOption'
+                name='paymentMethod'
                 id='direct_bank_transfer'
                 onChange={handleOnChange}
-                checked={paymentOption === 'direct_bank_transfer'}
+                checked={paymentMethod === 'direct_bank_transfer'}
                 value='direct_bank_transfer'
               />
               <label htmlFor='direct_bank_transfer'>Direct bank transfer</label>
@@ -240,10 +257,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
             <li>
               <input
                 type='radio'
-                name='paymentOption'
+                name='paymentMethod'
                 id='check_payments'
                 onChange={handleOnChange}
-                checked={paymentOption === 'check_payments'}
+                checked={paymentMethod === 'check_payments'}
                 value='check_payments'
               />
               <label htmlFor='check_payments'>Check Payments</label>
@@ -256,10 +273,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
             <li>
               <input
                 type='radio'
-                name='paymentOption'
+                name='paymentMethod'
                 id='cash_on_delivery'
                 onChange={handleOnChange}
-                checked={paymentOption === 'cash_on_delivery'}
+                checked={paymentMethod === 'cash_on_delivery'}
                 value='cash_on_delivery'
               />
               <label>Cash on delivery</label>
@@ -270,10 +287,10 @@ const Checkout = ({ cart, chooseShippingOption }) => {
             <li>
               <input
                 type='radio'
-                name='paymentOption'
+                name='paymentMethod'
                 id='paypal'
                 onChange={handleOnChange}
-                checked={paymentOption === 'paypal'}
+                checked={paymentMethod === 'paypal'}
                 value='paypal'
               />
               <label htmlFor='paypal'>Paypal</label>
@@ -296,14 +313,12 @@ const Checkout = ({ cart, chooseShippingOption }) => {
               onChange={() => setUserAgreed(!userAgreed)}
             />
 
-            <label htmlFor='agreement'>
-              I have read and agree to the website terms and conditions *{paymentOption}
-            </label>
+            <label htmlFor='agreement'>I have read and agree to the website terms and conditions *</label>
           </div>
 
           <div className='btn-wrapper btn' onClick={handlePlaceOrder}>
             <label>Place Order</label>
-            {paymentOption === 'paypal' && userAgreed && (
+            {paymentMethod === 'paypal' && userAgreed && (
               <div className='paypal-wrapper'>
                 <Paypal total={totalPrice} />
               </div>
@@ -318,8 +333,4 @@ const Checkout = ({ cart, chooseShippingOption }) => {
   )
 }
 
-const mapStateToProps = ({ cart }) => ({
-  cart
-})
-
-export default connect(mapStateToProps, { chooseShippingOption })(Checkout)
+export default Checkout

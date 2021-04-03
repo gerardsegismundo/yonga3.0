@@ -116,9 +116,7 @@ exports.updateComment = async (req, res) => {
 
   const result = await Product.findByIdAndUpdate(
     product_id,
-    {
-      comments: [...comments.slice(0, commentIndex), updatedComment, ...comments.slice(commentIndex + 1)]
-    },
+    { comments: [...comments.slice(0, commentIndex), updatedComment, ...comments.slice(commentIndex + 1)] },
     { new: true }
   )
 

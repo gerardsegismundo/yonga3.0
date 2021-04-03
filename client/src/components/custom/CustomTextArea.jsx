@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-const CustomTextArea = ({ name, value, onChange, disabled, label = '', placeholder = '' }) => {
+const CustomTextArea = ({ name, value = '', onChange, disabled, label = '', placeholder = '' }) => {
   const [inputIsActive, setInputIsActive] = useState(false)
 
   return (

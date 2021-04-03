@@ -37,8 +37,6 @@ const Login = ({ history }) => {
   }
 
   const handleFacebookLogin = async response => {
-    console.log(response)
-
     const { accessToken, userID } = response
 
     progress(async () => {

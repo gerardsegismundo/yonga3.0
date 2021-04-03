@@ -52,10 +52,13 @@ const UserSchema = new mongoose.Schema(
     },
     phone: {
       type: String
-    },
-    orders: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ordered' }]
+    }
   },
-  { timestamps: true }
+  {
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
+    timestamps: true
+  }
 )
 
 // JWT  refresh_token
@@ -83,5 +86,19 @@ UserSchema.methods.getResetToken = function () {
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
+
+// Cascade delete orders when a user is deleted
+UserSchema.pre('remove', async function (next) {
+  await this.model('Order').deleteMany({ user: this._id })
+  next()
+})
+
+// Reverse populate with virtuals
+UserSchema.virtual('orders', {
+  ref: 'Order',
+  localField: '_id',
+  foreignField: 'user',
+  justOne: false
+})
 
 module.exports = mongoose.model('User', UserSchema)

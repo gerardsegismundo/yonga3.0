@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 
 import _ from 'lodash'
-import { progress } from '../utils/helpers'
+import { addComma, progress } from '../utils/helpers'
 import { getProduct, addToCart } from '../redux/actions'
 import { NotificationManager } from 'react-notifications'
 
@@ -56,12 +56,8 @@ const Product = () => {
 
   const [currentRating, setCurrentRating] = useState({ numberOfRatings: 0, totalRating: 0 })
 
-  // useEffect(() => {
-  //   setCurrentRating({ ...currentRating, totalRating })
-  // }, [currentRating, totalRating])
   useEffect(() => {
     if (ratings) {
-      console.log(ratings.length)
       setCurrentRating({ numberOfRatings: ratings.length, totalRating })
     }
   }, [ratings, totalRating])
@@ -102,7 +98,7 @@ const Product = () => {
             <p className='categories'>
               Categories: {category && category.map((c, i) => <span key={c + i}> {c}</span>)}
             </p>
-            <p className='price'>${price}</p>
+            <p className='price'>${addComma(price)}</p>
             <input
               onKeyUp={handleOnKeyUp}
               type='number'

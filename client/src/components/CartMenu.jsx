@@ -44,7 +44,7 @@ const CartMenu = ({ handleToggleCartMenu, cartMenuRef }) => {
           Checkout
         </button>
         <p className='sub-total'>
-          <span>Subtotal:</span> ${addComma(parseFloat(totalPrice).toFixed(2))}
+          <span>Subtotal:</span> ${addComma(totalPrice)}
         </p>
       </div>
     </div>

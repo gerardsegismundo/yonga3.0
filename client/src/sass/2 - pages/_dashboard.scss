@@ -110,7 +110,14 @@
     flex: 3 1 30rem;
   }
 
+  // .orders {
+  // }
+
   .account-details {
+    h2 {
+      text-transform: capitalize;
+    }
+
     .note {
       margin-top: 1rem;
     }

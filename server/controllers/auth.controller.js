@@ -168,7 +168,7 @@ exports.getAccessToken = async (req, res) => {
 //  @route   GET  /auth/currentuser
 //  @access  PRIVATE
 exports.getCurrentUser = async (req, res) => {
-  const user = await User.findById(req.user.id).select('-password')
+  const user = await (await User.findById(req.user.id).select('-password')).populate('orders').execPopulate()
 
   res.status(200).json({ user })
 }

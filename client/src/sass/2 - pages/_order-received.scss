@@ -21,11 +21,9 @@
       }
     }
 
-    // mahirap to intindihin allen pero malupit
     @media only screen and (max-width: 760px),
       (min-device-width: 768px) and (max-device-width: 1024px) {
       height: 11rem;
-
       table,
       thead,
       tbody,
@@ -143,7 +141,9 @@
   }
 
   .billing-details {
-    margin-top: 2rem;
+    margin: 2rem 0;
+    border-bottom: 1px solid rgba(195, 195, 195, 0.4);
+    padding-bottom: 2rem;
 
     h2 {
       margin-bottom: 1.5rem;
@@ -153,5 +153,11 @@
     p {
       line-height: 1.75rem;
     }
+  }
+
+  .dark-btn {
+    margin-top: 3rem;
+    display: block;
+    width: fit-content;
   }
 }

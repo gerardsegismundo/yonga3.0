@@ -1,12 +1,14 @@
-import { Switch, Route, useRouteMatch, NavLink, Redirect } from 'react-router-dom'
-
+import { Switch, Route, useRouteMatch, NavLink } from 'react-router-dom'
+import { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../../redux/actions'
 
-import { progress } from '../../utils/helpers'
 import Address from './Address'
 import AccountDetails from './AccountDetails'
 import Avatar from '../../components/Avatar'
+import Orders from './Orders'
+
+import { logout } from '../../redux/actions'
+import { progress } from '../../utils/helpers'
 
 const routes = [
   { name: 'dashboard', path: '' },
@@ -15,58 +17,59 @@ const routes = [
   { name: 'account details', path: '/account-details' }
 ]
 
-const Dashboard = () => {
+const Dashboard = ({ history }) => {
+  const dispatch = useDispatch()
   const { path, url } = useRouteMatch()
 
-  const dispatch = useDispatch()
   const user = useSelector(({ user }) => user)
-
   const { isAuthenticated } = user
 
   const handleLogout = () => progress(() => dispatch(logout()))
 
-  return isAuthenticated && user.data ? (
-    <div className='dashboard'>
-      <nav>
-        {user.data.avatar && <Avatar />}
+  useEffect(() => {
+    if (!isAuthenticated) return history.push('/account/login')
+  }, [history, isAuthenticated])
 
-        <ul>
-          {routes.map(({ name, path }) => (
-            <li key={url + name}>
-              <NavLink exact to={url + path}>
-                {name}
-              </NavLink>
+  return (
+    user.data && (
+      <div className='dashboard'>
+        <nav>
+          {user.data.avatar && <Avatar />}
+
+          <ul>
+            {routes.map(({ name, path }) => (
+              <li key={url + name}>
+                <NavLink exact to={url + path}>
+                  {name}
+                </NavLink>
+              </li>
+            ))}
+            <li>
+              <button className='logout-btn' onClick={handleLogout}>
+                logout
+              </button>
             </li>
-          ))}
-          <li>
-            <button className='logout-btn' onClick={handleLogout}>
-              logout
-            </button>
-          </li>
-        </ul>
-      </nav>
-      <section className='content'>
-        <Switch>
-          <Route exact path={path}>
-            Hello {`${user.data.name}`}
-          </Route>
+          </ul>
+        </nav>
+        <section className='content'>
+          <Switch>
+            <Route exact path={path}>
+              Hello {`${user.data.name}`}
+            </Route>
 
-          <Route exact path={`${path}/orders`}>
-            <h3>My Orders</h3>
-            <p>Your recent orders are displayed in the table below.</p>
-          </Route>
+            <Route exact path={`${path}/orders`} render={() => <Orders orders={user.data.orders} />} />
 
-          <Route exact path={`${path}/address`}>
-            <Address />
-          </Route>
-          <Route exact path={`${path}/account-details`}>
-            <AccountDetails accessType={user.data.access_type} />
-          </Route>
-        </Switch>
-      </section>
-    </div>
-  ) : (
-    <Redirect to='/account/login' />
+            <Route exact path={`${path}/address`} component={Address} />
+
+            <Route
+              exact
+              path={`${path}/account-details`}
+              render={() => <AccountDetails accessType={user.data.access_type} />}
+            ></Route>
+          </Switch>
+        </section>
+      </div>
+    )
   )
 }
 

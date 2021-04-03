@@ -1,13 +1,9 @@
 import React, { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
-import { Route, Switch } from 'react-router-dom'
 
 import { of, fromEvent, animationFrameScheduler } from 'rxjs'
 import { distinctUntilChanged, filter, map, pairwise, switchMap, throttleTime } from 'rxjs/operators'
 import { useObservable } from 'rxjs-hooks'
-
-import { Home, Login, Register, Category, Cart, Checkout, About, Contact, Terms } from './pages'
-import { ForgotPassword, ResetPassword, Dashboard, NotFound, OrderReceived, Product } from './pages'
 
 import Layout from './layouts/Layout'
 
@@ -17,31 +13,14 @@ import { landingAnimation } from './utils/animations'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { getCurrentUser, getProducts } from './redux/actions'
-
-const routes = [
-  { path: '/', component: Home },
-  { path: '/account/register', component: Register },
-  { path: '/account/login/:activation_token?', component: Login },
-  { path: '/account/forgotpassword', component: ForgotPassword },
-  { path: '/account/resetpassword/:reset_token?', component: ResetPassword },
-  { path: '/cart', component: Cart },
-  { path: '/about', component: About },
-  { path: '/contact', component: Contact },
-  { path: '/terms', component: Terms },
-  { path: '/checkout', component: Checkout },
-  { path: '/order-received', component: OrderReceived },
-  { path: '/product-category/:category', component: Category },
-  { path: '/product/:product_name', component: Product },
-  { path: '/account/dashboard', component: Dashboard, exact: false },
-  { path: null, component: NotFound, exact: false }
-]
+import Routes from './components/Routes'
 
 const tl = gsap.timeline()
 
 const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(({ user }) => user)
-  const navMenuIsOpen = useSelector(({ ui }) => ui.navMenuIsOpen)
+  const { navMenuIsOpen, cartMenuIsOpen } = useSelector(({ ui }) => ui)
 
   const watchScroll = () =>
     of(typeof window === 'undefined').pipe(
@@ -79,7 +58,7 @@ const App = () => {
   useResponsiveVH()
 
   useEffect(() => {
-    if (!navMenuIsOpen) {
+    if (!navMenuIsOpen && !cartMenuIsOpen) {
       const params = scrollDirection === 'Up' ? [1, 0.3, 0] : [0, 0.3, -50]
 
       const animateHeader = ([autoAlpha, duration, y]) => {
@@ -88,15 +67,11 @@ const App = () => {
 
       animateHeader(params)
     }
-  }, [navMenuIsOpen, scrollDirection])
+  }, [cartMenuIsOpen, navMenuIsOpen, scrollDirection])
 
   return (
     <Layout>
-      <Switch>
-        {routes.map(({ path, component, exact = true }) => (
-          <Route exact={exact} path={path} component={component} key={path} />
-        ))}
-      </Switch>
+      <Routes />
     </Layout>
   )
 }

@@ -1,3 +1,6 @@
+import axios from 'axios'
+import { authAxios } from '../../utils/helpers'
+
 export const addToCart = payload => dispatch => {
   dispatch({ type: 'ADD_TO_CART', payload })
 }
@@ -24,5 +27,31 @@ export const updateQuantity = product => dispatch => {
 export const updateTotalQuantity = () => dispatch => {
   dispatch({
     type: 'UPDATE_TOTAL_QUANTITY'
+  })
+}
+
+export const checkout = ({ nonRegisteredUserDetails, checkOutDetails }) => async dispatch => {
+  try {
+    const { data } = nonRegisteredUserDetails
+      ? await axios.post('/order', { checkOutDetails, nonRegisteredUserDetails })
+      : await authAxios.post('/order', { checkOutDetails })
+
+    await dispatch({
+      type: 'CHECK_OUT',
+      payload: data
+    })
+
+    return true
+  } catch (error) {
+    console.log(error)
+
+    return false
+  }
+}
+
+export const clearCheckout = () => dispatch => {
+  console.log('CLEAR!')
+  dispatch({
+    type: 'CLEAR_CHECKOUT'
   })
 }

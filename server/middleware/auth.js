@@ -3,16 +3,19 @@ const User = require('../models/user.model')
 
 // Protect routes
 exports.protect = async (req, res, next) => {
-  let token
+  // if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+  //   // Set token from Bearer token in header
+  //   token = req.headers.authorization.split(' ')[1]
+  // }
 
-  if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-    // Set token from Bearer token in header
-    token = req.headers.authorization.split(' ')[1]
-  }
+  // if (!token) {
 
-  if (!token) {
+  // }
+  if (!req.headers.authorization && !req.headers.authorization.startsWith('Bearer')) {
     return res.status(401).json({ error: { msg: 'Not authorized to access this route' } })
   }
+
+  const token = req.headers.authorization.split(' ')[1]
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_ACCESS)
@@ -32,9 +35,7 @@ exports.protect = async (req, res, next) => {
 }
 
 exports.optionalAuthentication = (req, _res, next) => {
-  if (!req.headers.authorization) {
-    next()
-  }
+  if (!req.headers.authorization) return next()
 
-  this.protect()
+  this.protect(req, _res, next)
 }

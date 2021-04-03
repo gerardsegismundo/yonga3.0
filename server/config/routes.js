@@ -12,6 +12,7 @@ require('express-async-errors')
 const userRoute = require('../routes/user.routes')
 const productRoute = require('../routes/product.routes')
 const authRoute = require('../routes/auth.routes')
+const orderRoute = require('../routes/order.routes')
 
 // Initialization
 module.exports = app => {
@@ -30,4 +31,5 @@ module.exports = app => {
   app.use('/api/user', userRoute)
   app.use('/api/auth', authRoute)
   app.use('/api/product', productRoute)
+  app.use('/api/order', orderRoute)
 }

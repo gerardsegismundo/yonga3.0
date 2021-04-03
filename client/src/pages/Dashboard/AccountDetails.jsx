@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const AccountDetails = ({ accessType }) => {
   return (
     <div className='account-details'>
-      <h2>Account</h2>
+      <h2>{accessType} Account</h2>
       <p className='note'>Edit your account details</p>
 
       {accessType === 'local' && (
@@ -12,6 +12,8 @@ const AccountDetails = ({ accessType }) => {
           Reset password
         </Link>
       )}
+
+      <button className='btn dark-btn'>Delete Account</button>
     </div>
   )
 }

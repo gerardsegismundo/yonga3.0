@@ -9,9 +9,7 @@ import { addComma, slugifyProduct } from '../utils/helpers'
 const CartItem = ({ _id, name, quantity, imageURL, price, removeOne }) => {
   const productLink = slugifyProduct(name)
 
-  const handleRemoveFromCart = () => {
-    removeOne(_id)
-  }
+  const handleRemoveFromCart = () => removeOne(_id)
 
   return (
     <div className='cart-item'>
@@ -20,7 +18,7 @@ const CartItem = ({ _id, name, quantity, imageURL, price, removeOne }) => {
         {name}
       </Link>
       <p className='info'>
-        quantity: {quantity} &nbsp;&times;&nbsp; ${price}
+        quantity: {quantity} &nbsp;&times;&nbsp; ${addComma(price)}
       </p>
 
       <p className='total-price'>${addComma(round(quantity * price, 2))}</p>
