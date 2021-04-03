@@ -1,20 +1,26 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { formatDate } from '../utils/helpers'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
+import { clearCheckout } from '../redux/actions'
 
 const OrderReceived = () => {
   const dispatch = useDispatch()
+  const history = useHistory()
   const { cart, user } = useSelector(data => data)
 
-  const { checkOutDetails } = cart
+  const { checkOutDetails, isCheckingOut } = cart
+
+  const clearCheckoutRef = useRef(() => dispatch(clearCheckout()))
 
   useEffect(() => {
-    return () => {
-      // clear checkouts...z.
-      window.onbeforeunload = () => console.log('BWISHIT???')
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => clearCheckoutRef.current()
   }, [])
+
+  if (!isCheckingOut) {
+    return <h1>NO purchase</h1>
+  }
 
   if (!checkOutDetails) {
     return <h1>Loading... </h1>

@@ -16,7 +16,7 @@ const routes = [
   { path: '/contact', component: Contact },
   { path: '/terms', component: Terms },
   { path: '/checkout', component: Checkout },
-  // { path: '/order-received', component: OrderReceived },
+  { path: '/order-received', component: OrderReceived },
   { path: '/product-category/:category', component: Category },
   { path: '/product/:product_name', component: Product },
   { path: '/account/dashboard', component: Dashboard, exact: false },
@@ -26,16 +26,8 @@ const routes = [
 const Routes = () => {
   return (
     <Switch>
-      <Route
-        exact={true}
-        path={'/order-received'}
-        component={OrderReceived}
-        // @note YAW GUMANA
-        onLeave={() => console.log('HEAY KA GEE!!!')}
-      />
-
-      {routes.map(({ path, component, exact = true, onLeave = () => console.log('WTF') }) => (
-        <Route exact={exact} path={path} component={component} key={path} onLeave={onLeave} />
+      {routes.map(({ path, component, exact = true }) => (
+        <Route exact={exact} path={path} component={component} key={path} />
       ))}
     </Switch>
   )

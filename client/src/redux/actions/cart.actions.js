@@ -50,7 +50,6 @@ export const checkout = ({ nonRegisteredUserDetails, checkOutDetails }) => async
 }
 
 export const clearCheckout = () => dispatch => {
-  console.log('CLEAR!')
   dispatch({
     type: 'CLEAR_CHECKOUT'
   })

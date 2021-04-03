@@ -35,8 +35,7 @@ const Checkout = () => {
     addInfo: ''
   })
 
-  // const [userAgreed, setUserAgreed] = useState(false)
-  const [userAgreed, setUserAgreed] = useState(true)
+  const [userAgreed, setUserAgreed] = useState(false)
 
   const [error, setError] = useState({
     name: '',
@@ -51,11 +50,8 @@ const Checkout = () => {
     addInfo: ''
   })
 
-  // const [paymentMethod, setPaymentMethod] = useState(null)
-  const [paymentMethod, setPaymentMethod] = useState('direct_bank_transfer')
-
-  // const [isFormDisabled, setIsFormDisabled] = useState(false)
-  const [isFormDisabled, setIsFormDisabled] = useState(true)
+  const [paymentMethod, setPaymentMethod] = useState(null)
+  const [isFormDisabled, setIsFormDisabled] = useState(false)
 
   let { totalPrice } = cart
 

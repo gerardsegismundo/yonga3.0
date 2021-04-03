@@ -160,12 +160,15 @@ const cartReducer = (state = initialState, { type, payload }) => {
       return { ...state, shippingOption: payload }
 
     case 'CHECK_OUT':
+      localStorage.removeItem('products')
+      localStorage.removeItem('totalQuantity')
+      localStorage.removeItem('totalPrice')
+
       return {
-        // products: [],
-        // totalQuantity: 0,
-        // totalPrice: 0,
-        // shippingOption: 'flat_rate',
-        ...state,
+        products: [],
+        totalQuantity: 0,
+        totalPrice: 0,
+        shippingOption: 'flat_rate',
         isCheckingOut: true,
         checkOutDetails: payload
       }
