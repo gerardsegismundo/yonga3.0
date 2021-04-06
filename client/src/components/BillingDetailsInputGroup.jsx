@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { useSelector } from 'react-redux'
 import Dropdown from 'react-dropdown'
 import countryList from 'react-select-country-list'

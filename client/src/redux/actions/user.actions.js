@@ -71,4 +71,7 @@ export const updateAvatar = (file, deleteId) => async dispatch => {
   }
 }
 
-export const checkout = payload => async dispatch => {}
+export const deleteAccount = args => async dispatch => {
+  console.log(args)
+  console.log('DELETE ACCOUNT')
+}

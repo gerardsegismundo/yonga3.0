@@ -8,8 +8,9 @@ const initialState = {
     deleteId: ''
   },
   confirmModal: {
-    productId: '',
-    commentId: '',
+    msg: '',
+    args: {},
+    onDelete: '',
     isOpen: false
   }
 }
@@ -48,13 +49,14 @@ const uiReducer = (state = initialState, { type, payload }) => {
       }
 
     case 'OPEN_CONFIRM_MODAL':
-      const { productId, commentId } = payload
+      const { msg, onDelete, args } = payload
 
       return {
         ...state,
         confirmModal: {
-          productId,
-          commentId,
+          msg,
+          onDelete,
+          args,
           isOpen: true
         }
       }

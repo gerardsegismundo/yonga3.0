@@ -85,7 +85,7 @@ export const updateComment = (productId, commentId, comment) => async dispatch =
   }
 }
 
-export const deleteComment = (productId, commentId) => async dispatch => {
+export const deleteComment = ({ commentId, productId }) => async dispatch => {
   try {
     const { data } = await authAxios.delete(`/product/${productId}/comment/${commentId}`)
 
@@ -94,6 +94,6 @@ export const deleteComment = (productId, commentId) => async dispatch => {
       payload: data
     })
   } catch (error) {
-    console.log(error.response)
+    console.log(error)
   }
 }

@@ -1,4 +1,4 @@
-import { connect } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { NotificationContainer } from 'react-notifications'
 
 import DarkOverlay from './DarkOverlay'
@@ -8,12 +8,20 @@ import Footer from './Footer'
 
 import UploadModal from '../components/UploadModal'
 import ConfirmModal from '../components/ConfirmModal'
+import { deleteComment, deleteAccount } from '../redux/actions'
 
 const Layout = ({ children }) => {
+  const dispatch = useDispatch()
+
   return (
     <>
       <UploadModal />
-      <ConfirmModal />
+      <ConfirmModal
+        deleteManager={{
+          DELETE_COMMENT: args => dispatch(deleteComment(args)),
+          DELETE_ACCOUNT: args => dispatch(deleteAccount(args))
+        }}
+      />
       <NotificationContainer />
       <DarkOverlay />
       <Header />
@@ -25,8 +33,4 @@ const Layout = ({ children }) => {
   )
 }
 
-const mapStateToProps = ({ ui }) => ({
-  navMenuIsOpen: ui.navMenuIsOpen
-})
-
-export default connect(mapStateToProps)(Layout)
+export default Layout

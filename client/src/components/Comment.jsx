@@ -19,8 +19,14 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
     setCommentHandler(comment)
   }, [comment])
 
-  const handleDelete = e => {
-    dispatch(openConfirmModal(_id, productId))
+  const handleDelete = () => {
+    dispatch(
+      openConfirmModal({
+        msg: 'Are you sure you want to delete your comment?',
+        onDelete: 'DELETE_COMMENT',
+        args: { commentId: _id, productId }
+      })
+    )
   }
 
   const date = formatDate(createdAt)
@@ -31,7 +37,6 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
 
   const handleUpdate = () => {
     progress(() => dispatch(updateComment(productId, _id, commentHandler)))
-
     setIsEditing(false)
   }
 
@@ -48,7 +53,7 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
         {!isEditing ? (
           <>
             <p className='msg'>{comment}</p>
-            {currentUser.isAuthenticated && currentUser.data._id === user._id && (
+            {currentUser.isAuthenticated && currentUser.data && currentUser.data._id === user._id && (
               <>
                 <button onClick={handleEdit}>edit</button>
                 <button onClick={handleDelete}>delete</button>

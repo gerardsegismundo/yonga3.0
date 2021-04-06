@@ -3,14 +3,14 @@ import { gsap } from 'gsap'
 import { ReactComponent as CloseIcon } from '../assets/icons/close.svg'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { deleteComment, closeConfirmModal } from '../redux/actions'
+import { closeConfirmModal } from '../redux/actions'
 import { progress } from '../utils/helpers'
 
-const ConfirmModal = () => {
+const ConfirmModal = ({ deleteManager }) => {
   const dispatch = useDispatch()
   const { confirmModal } = useSelector(({ ui }) => ui)
 
-  const { isOpen, productId, commentId } = confirmModal
+  const { isOpen, msg, args, onDelete: DELETE_TYPE } = confirmModal
 
   const handleOnClose = () => {
     gsap.to('.confirm-modal', {
@@ -23,22 +23,13 @@ const ConfirmModal = () => {
   }
 
   const handleOnDelete = () => {
-    progress(() => {
-      dispatch(deleteComment(productId, commentId))
-    })
-    dispatch(closeConfirmModal())
+    progress(() => deleteManager[DELETE_TYPE](args))
+    handleOnClose()
   }
 
   useEffect(() => {
     if (isOpen) {
-      gsap.fromTo(
-        '.confirm-modal',
-        { y: -80 },
-        {
-          autoAlpha: 1,
-          y: -30
-        }
-      )
+      gsap.fromTo('.confirm-modal', { y: -80 }, { autoAlpha: 1, y: -30 })
     }
   }, [isOpen])
 
@@ -46,7 +37,7 @@ const ConfirmModal = () => {
     <div className='confirm-wrapper'>
       <div className='confirm-modal'>
         <CloseIcon onClick={handleOnClose} />
-        <p>Are you sure you want to delete your comment?</p>
+        <p>{msg}</p>
 
         <div className='button-group'>
           <button className='dark-btn' onClick={handleOnDelete}>

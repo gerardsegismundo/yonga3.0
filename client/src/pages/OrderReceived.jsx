@@ -1,12 +1,11 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { formatDate } from '../utils/helpers'
-import { Link, useHistory } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { clearCheckout } from '../redux/actions'
 
 const OrderReceived = () => {
   const dispatch = useDispatch()
-  const history = useHistory()
   const { cart, user } = useSelector(data => data)
 
   const { checkOutDetails, isCheckingOut } = cart
