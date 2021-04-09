@@ -9,10 +9,12 @@ const Avatar = () => {
   const { url, public_id } = useSelector(({ user }) => user.data.avatar)
 
   const handleOnChange = e => {
-    const file = URL.createObjectURL(e.target.files[0])
-
-    // public_id - will be deleted / previous avatar pid
-    dispatch(openUploadModal(file, public_id))
+    dispatch(
+      openUploadModal({
+        file: URL.createObjectURL(e.target.files[0]),
+        avatarId: public_id
+      })
+    )
   }
 
   return (

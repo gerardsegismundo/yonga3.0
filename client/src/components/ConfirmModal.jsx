@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import { closeConfirmModal } from '../redux/actions'
 import { progress } from '../utils/helpers'
+import { NotificationManager } from 'react-notifications'
 
 const ConfirmModal = ({ deleteManager }) => {
   const dispatch = useDispatch()
@@ -23,7 +24,12 @@ const ConfirmModal = ({ deleteManager }) => {
   }
 
   const handleOnDelete = () => {
-    progress(() => deleteManager[DELETE_TYPE](args))
+    progress(async () => {
+      const isSuccess = await deleteManager[DELETE_TYPE](args)
+
+      if (!isSuccess) return NotificationManager.error(msg.error.body, msg.error.title)
+      NotificationManager.success(msg.success.body, msg.success.title)
+    })
     handleOnClose()
   }
 
@@ -37,7 +43,7 @@ const ConfirmModal = ({ deleteManager }) => {
     <div className='confirm-wrapper'>
       <div className='confirm-modal'>
         <CloseIcon onClick={handleOnClose} />
-        <p>{msg}</p>
+        <p>{msg.confirmation}</p>
 
         <div className='button-group'>
           <button className='dark-btn' onClick={handleOnDelete}>

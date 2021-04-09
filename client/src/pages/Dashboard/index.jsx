@@ -61,11 +61,7 @@ const Dashboard = ({ history }) => {
 
             <Route exact path={`${path}/address`} component={Address} />
 
-            <Route
-              exact
-              path={`${path}/account-details`}
-              render={() => <AccountDetails accessType={user.data.access_type} />}
-            ></Route>
+            <Route exact path={`${path}/account-details`} component={AccountDetails}></Route>
           </Switch>
         </section>
       </div>

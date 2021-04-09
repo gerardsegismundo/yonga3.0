@@ -6,10 +6,10 @@ export const toggleCartMenu = () => dispatch => {
   dispatch({ type: 'TOGGLE_CART_MENU' })
 }
 
-export const openUploadModal = (file, deleteId) => dispatch => {
+export const openUploadModal = ({ file, avatarId }) => dispatch => {
   dispatch({
     type: 'OPEN_UPLOAD_MODAL',
-    payload: { file, deleteId }
+    payload: { file, avatarId }
   })
 }
 

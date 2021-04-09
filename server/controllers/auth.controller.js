@@ -2,13 +2,13 @@
 //  Base URL: /api/auth
 
 const jwt = require('jsonwebtoken')
-const User = require('../models/user.model')
-
-const { sendEmail, createURL, hashPassword, capitalize } = require('../utils/')
-
+const cloudinary = require('cloudinary')
 const { google } = require('googleapis')
-const { OAuth2 } = google.auth
 const fetch = require('node-fetch')
+const { OAuth2 } = google.auth
+
+const User = require('../models/user.model')
+const { sendEmail, createURL, hashPassword, capitalize } = require('../utils/')
 
 const cookieOptions = {
   httpOnly: true,
@@ -231,6 +231,25 @@ exports.validateResetToken = async (req, res) => {
   }
 }
 
+//  @route   DELETE  /auth/avatar/:public_id?
+//  @access  PRIVATE
+exports.deleteCurrentUser = async (req, res) => {
+  const { public_id } = req.params
+
+  if (public_id) {
+    const avatarPublicId = `avatars/${public_id}`
+
+    cloudinary.v2.uploader.destroy(avatarPublicId, error => {
+      if (error) return res.status(400).json({ error })
+    })
+  }
+
+  await User.findByIdAndDelete(req.user.id)
+
+  console.log('DELETED!~')
+  res.status(200).json({ msg: 'Account deleted.' })
+}
+
 //  @route    POST  /auth/resetpassword
 exports.resetPassword = async (req, res) => {
   const { clientId, password } = req.body
@@ -250,10 +269,6 @@ exports.facebookLogin = async (req, res) => {
 
   const { name, email, picture } = await fetch(graphAPI).then(res => res.json())
 
-  console.log(typeof picture.data.url)
-  console.log(picture.data.url)
-
-  console.log({ name, email, picture })
   const user = await User.findOne({ email, access_type: 'facebook' })
 
   let refresh_token

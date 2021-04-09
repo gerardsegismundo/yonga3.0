@@ -23,7 +23,7 @@ const UploadModal = () => {
     })
   }
 
-  const { isOpen, file, deleteId } = uploadModal
+  const { isOpen, file, avatarId } = uploadModal
 
   const [crop, setCrop] = useState({ x: 0, y: 0 })
   const [zoom, setZoom] = useState(1)
@@ -41,7 +41,7 @@ const UploadModal = () => {
         const croppedImage = await getCroppedImg(file, croppedAreaPixels)
 
         handleOnClose()
-        await dispatch(updateAvatar(croppedImage, deleteId))
+        await dispatch(updateAvatar({ croppedImage, avatarId }))
       })
     } catch (error) {
       console.error(error.response)

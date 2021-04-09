@@ -1,6 +1,5 @@
 //  USER CONTROLLERS
 //  Base URL: /api/user
-
 const cloudinary = require('cloudinary')
 const fs = require('fs')
 
@@ -17,26 +16,13 @@ exports.updateUser = async (req, res) => {
   res.json({ user })
 }
 
-//  @route    POST  user/checkout
-//  @access   PRIVATE
-exports.checkout = async (req, res) => {
-  console.log('CHEKCTOUT')
-  res.send(req.body)
-}
-
 //  @route    POST  user/upload_avatar
 //  @access   PRIVATE
 exports.uploadAvatar = async (req, res) => {
-  cloudinary.config({
-    cloud_name: process.env.CLOUD_NAME,
-    api_key: process.env.CLOUD_API_KEY,
-    api_secret: process.env.CLOUD_API_SECRET
-  })
+  const { file } = req.files
 
-  const file = req.files.file
-
-  if (req.body.deleteId) {
-    cloudinary.v2.uploader.destroy(req.body.deleteId, error => {
+  if (req.body.previousAvatarId) {
+    cloudinary.v2.uploader.destroy(req.body.previousAvatarId, error => {
       if (error) return res.status(400).json({ error })
     })
   }

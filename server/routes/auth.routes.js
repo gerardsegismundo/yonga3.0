@@ -13,7 +13,8 @@ const {
   resetPassword,
   googleLogin,
   facebookLogin,
-  twitterLogin
+  twitterLogin,
+  deleteCurrentUser
 } = require('../controllers/auth.controller')
 
 router.post('/register', register)
@@ -25,6 +26,7 @@ router.post('/forgotpassword', forgotPassword)
 router.get('/validatereset_token', validateResetToken)
 router.post('/resetpassword', resetPassword)
 router.get('/logout', logout)
+router.delete('/avatars/:public_id?', protect, deleteCurrentUser)
 
 router.post('/google_login', googleLogin)
 router.post('/facebook_login', facebookLogin)

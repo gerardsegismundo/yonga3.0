@@ -63,7 +63,6 @@ export const addComment = (productId, comment) => async dispatch => {
       payload: data.newComment
     })
   } catch (error) {
-    console.log(error.response.data)
     if (error.response.data.message) {
       return error.response.data.message
     }

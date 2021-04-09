@@ -4,13 +4,13 @@ const connectDB = require('./config/db')
 const path = require('path')
 require('colors')
 
-//  * ENV VARS
+//  ENV variables
 require('dotenv').config()
 
-//  * DATABASE CONNECTION
+//  Database connection
 connectDB()
 
-//  * ROUTES
+//  Routes
 require('./config/routes')(app)
 
 if (process.env.NODE_ENV === 'production') {

@@ -50,10 +50,10 @@ export const updateUser = payload => async dispatch => {
   }
 }
 
-export const updateAvatar = (file, deleteId) => async dispatch => {
+export const updateAvatar = ({ file, avatarId: previousAvatarId }) => async dispatch => {
   let formData = new FormData()
   formData.append('file', file)
-  formData.append('deleteId', deleteId)
+  formData.append('previousAvatarId', previousAvatarId)
 
   try {
     const { data } = await authAxios.post(`/user/upload_avatar`, formData, {
@@ -71,7 +71,15 @@ export const updateAvatar = (file, deleteId) => async dispatch => {
   }
 }
 
-export const deleteAccount = args => async dispatch => {
-  console.log(args)
-  console.log('DELETE ACCOUNT')
+export const deleteAccount = ({ avatarPublicId }) => async dispatch => {
+  try {
+    await authAxios.delete(`/auth/${avatarPublicId}`)
+
+    dispatch({ type: 'LOGOUT' })
+
+    return true
+  } catch (error) {
+    console.log(error.response)
+    return false
+  }
 }

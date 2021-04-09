@@ -5,7 +5,7 @@ const initialState = {
   uploadModal: {
     isOpen: false,
     file: null,
-    deleteId: ''
+    avatarId: ''
   },
   confirmModal: {
     msg: '',
@@ -35,7 +35,7 @@ const uiReducer = (state = initialState, { type, payload }) => {
         uploadModal: {
           isOpen: true,
           file: payload.file,
-          deleteId: payload.deleteId
+          avatarId: payload.avatarId
         }
       }
 

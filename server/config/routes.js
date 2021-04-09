@@ -5,8 +5,16 @@ const cors = require('cors')
 const xss = require('xss-clean')
 const cookieParser = require('cookie-parser')
 const fileUpload = require('express-fileupload')
+const cloudinary = require('cloudinary')
 
 require('express-async-errors')
+
+// Cloudinary env config
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET
+})
 
 // Routes
 const userRoute = require('../routes/user.routes')
