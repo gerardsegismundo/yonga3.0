@@ -2,7 +2,7 @@
 
 > An e-commerce web application using MERN stack.
 
-![Desktop Responsive](https://res.cloudinary.com/yonga/image/upload/v1618008761/Yonga_1_wsukds.png)
+![Desktop Responsive](https://res.cloudinary.com/yonga/image/upload/v1618009167/Untitled_lpfigr.png)
 ![iPhone Responsive](https://res.cloudinary.com/yonga/image/upload/v1618008429/Yonga_dkphyx.png)
 
 ## Features
