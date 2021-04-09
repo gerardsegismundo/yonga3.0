@@ -8,7 +8,7 @@ import GoogleLogin from 'react-google-login'
 import axios from 'axios'
 
 import LoginForm from '../components/LoginForm'
-// import { NotificationManager } from 'react-notifications'
+import { NotificationManager } from 'react-notifications'
 import { useSelector } from 'react-redux'
 
 import { login } from '../redux/actions'
@@ -21,7 +21,7 @@ const Login = ({ history }) => {
 
   const handleOnFailure = response => {
     console.error(response)
-    // NotificationManager.warning('Something went wrong.', response, 3000)
+    NotificationManager.warning('Something went wrong.', response, 3000)
   }
 
   const handleGoogleLogin = async ({ tokenId }) => {
@@ -73,7 +73,7 @@ const Login = ({ history }) => {
         <p className='social-login-msg'>Or log In using</p>
         <div className='social-login-icons'>
           <FacebookLogin
-            appId={285492512995130}
+            appId={process.env.REACT_APP_FB_APP_ID}
             fields='name,email,picture'
             callback={handleFacebookLogin}
             render={renderProps => (
@@ -86,7 +86,6 @@ const Login = ({ history }) => {
           <GoogleLogin
             clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
             render={renderProps => (
-              // clientId='65854250445-4n1vi51lvuk3kkgg1mk1ptjqqv0hj1tv.apps.
               <button onClick={renderProps.onClick}>
                 <i className='fa fa-google' />
               </button>
