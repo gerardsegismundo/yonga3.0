@@ -2,6 +2,8 @@
 
 > An e-commerce web application using MERN stack.
 
+![iPhone Responsive](https://res.cloudinary.com/yonga/image/upload/v1618008429/Yonga_dkphyx.png)
+
 ## Features
 
 - Cookie-based authentication with refresh and access token (CSRF and JWT based app)
