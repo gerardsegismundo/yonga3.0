@@ -90,6 +90,7 @@ UserSchema.methods.matchPassword = async function (enteredPassword) {
 // Cascade delete orders when a user is deleted
 UserSchema.pre('remove', async function (next) {
   await this.model('Order').deleteMany({ user: this._id })
+  // await this.model('Comment').deleteMany({ user: this._id })
   next()
 })
 

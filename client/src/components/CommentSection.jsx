@@ -15,10 +15,7 @@ const CommentSection = ({ productId, comments }) =>
           </div>
         )}
 
-        {comments &&
-          comments.map(comment => (
-            <Comment {...comment} key={comment._id} productId={productId} />
-          ))}
+        {comments && comments.map(comment => <Comment {...comment} key={comment._id} productId={productId} />)}
 
         <CommentForm productId={productId} />
       </section>

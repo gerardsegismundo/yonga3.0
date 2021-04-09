@@ -68,3 +68,18 @@ const ProductSchema = mongoose.Schema(
 )
 
 module.exports = mongoose.model('Product', ProductSchema)
+// const CommentSchema = mongoose.Schema({
+//   comment: { type: String, required: true },
+//   user: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     required: true,
+//     ref: 'User'
+//   },
+
+//   createdAt: {
+//     type: Date,
+//     default: Date.now
+//   }
+// })
+
+// module.exports = mongoose.model('Comment', ProductSchema)

@@ -2,7 +2,6 @@ import { Link } from 'react-router-dom'
 
 import { useDispatch, useSelector } from 'react-redux'
 import { openConfirmModal } from '../../redux/actions'
-import { NotificationManager } from 'react-notifications'
 
 const AccountDetails = () => {
   const dispatch = useDispatch()

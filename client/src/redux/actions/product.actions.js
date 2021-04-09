@@ -92,7 +92,11 @@ export const deleteComment = ({ commentId, productId }) => async dispatch => {
       type: 'DELETE_COMMENT',
       payload: data
     })
+
+    return true
   } catch (error) {
     console.log(error)
+
+    return false
   }
 }

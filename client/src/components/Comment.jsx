@@ -22,7 +22,18 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
   const handleDelete = () => {
     dispatch(
       openConfirmModal({
-        msg: 'Are you sure you want to delete your comment?',
+        msg: {
+          confirmation: 'Are you sure you want to delete your comment?',
+          success: {
+            title: 'Success!',
+            body: 'Your comment has been deleted.'
+          },
+          error: {
+            title: 'Failed!',
+            body: 'Oops something went wrong. Please try again later.'
+          }
+        },
+
         onDelete: 'DELETE_COMMENT',
         args: { commentId: _id, productId }
       })
@@ -40,11 +51,17 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
     setIsEditing(false)
   }
 
+  const NoUserImageLink = 'https://res.cloudinary.com/yonga/image/upload/v1609120288/no_image_avatar_f1er2g.png'
+
   return (
     <div className='comment'>
-      <img className='avatar' src={user.avatar && user.avatar.url} alt='avatar' />
+      <img
+        className='avatar'
+        src={!user ? NoUserImageLink : user.avatar ? user.avatar.url : NoUserImageLink}
+        alt='avatar'
+      />
       <h4 className='label'>
-        <span>{user && user.name} &nbsp;&nbsp;|</span>
+        <span>{!user ? 'Deleted User' : user && user.name} &nbsp;&nbsp;|</span>
         &nbsp;&nbsp;
         <wbr />
         <span>{date}</span>
@@ -53,7 +70,7 @@ const Comment = ({ createdAt, comment, user, _id, productId }) => {
         {!isEditing ? (
           <>
             <p className='msg'>{comment}</p>
-            {currentUser.isAuthenticated && currentUser.data && currentUser.data._id === user._id && (
+            {user && currentUser.isAuthenticated && currentUser.data && currentUser.data._id === user._id && (
               <>
                 <button onClick={handleEdit}>edit</button>
                 <button onClick={handleDelete}>delete</button>
