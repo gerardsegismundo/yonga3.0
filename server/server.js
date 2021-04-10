@@ -14,19 +14,18 @@ connectDB()
 require('./config/routes')(app)
 
 // if (process.env.NODE_ENV === 'production') {
-//   // Set static Z
-//   // app.use(express.static('client/build'))
-//   // app.use(express.static('client/public'))
-
 //   app.get('*', (_req, res) => res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html')))
 
 //   app.use(express.static(path.join(__dirname, 'client/build')))
 // }
 
+// Serve static assets in production
 if (process.env.NODE_ENV === 'production') {
+  // Set static folder
   app.use(express.static('client/build'))
+
   app.get('*', (_req, res) => {
-    res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'))
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
   })
 }
 
