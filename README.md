@@ -2,8 +2,23 @@
 
 > An e-commerce web application using MERN stack.
 
+# Sample Screenshots 📷
+
+## Desktop Landing Page
+
 ![Desktop Responsive](https://res.cloudinary.com/yonga/image/upload/v1618009167/Untitled_lpfigr.png)
+
+## Phone Screen Landing Page
+
 ![iPhone Responsive](https://res.cloudinary.com/yonga/image/upload/v1618008429/Yonga_dkphyx.png)
+
+## Login Page
+
+![Login Page](https://res.cloudinary.com/yonga/image/upload/v1618178100/Login_j9lzov.png)
+
+## Email Registry Verification
+
+![Email Registry Verification](https://res.cloudinary.com/yonga/image/upload/v1618177811/emailRegistration_pqgfrb.png)
 
 ## Features
 
@@ -20,6 +35,7 @@
 - Checkout process (shipping, payment method, etc)
 - PayPal / credit card integration
 - Database seeder
+- AND MORE...
 
 ## Quick Start
 

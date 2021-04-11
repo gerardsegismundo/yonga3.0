@@ -71,12 +71,12 @@ const Register = () => {
 
           await axios.post('/auth/register', payload)
 
-          // ** ---- NEED TO FIX INVALID GRANT -- reregister API KEY. ----- ** //
           NotificationManager.success(`Your registration confirmation has been sent to ${form.email}.`, 'Email Sent.')
 
           clearForm()
         } catch (error) {
           console.error(error)
+          console.error(error.response)
 
           if (error.response.data.error) {
             setError({
