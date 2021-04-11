@@ -2,6 +2,8 @@
 
 > An e-commerce web application using MERN stack.
 
+Here's the link to this project -> [https://yonga.herokuapp.com/](https://yonga.herokuapp.com/)
+
 # Sample Screenshots 📷
 
 ## Desktop Landing Page
@@ -15,6 +17,10 @@
 ## Login Page
 
 ![Login Page](https://res.cloudinary.com/yonga/image/upload/v1618178100/Login_j9lzov.png)
+
+## Upload image with zoom and crop functionality to cloudinary API
+
+![Dashboard upload Image](https://res.cloudinary.com/yonga/image/upload/v1618184033/crop_gmg0cd.png)
 
 ## Email Registry Verification
 
