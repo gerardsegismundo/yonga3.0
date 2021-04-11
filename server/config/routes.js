@@ -25,7 +25,11 @@ const orderRoute = require('../routes/order.routes')
 // Initialization
 module.exports = app => {
   app.use(mongoSanitize())
-  app.use(helmet())
+  app.use(
+    helmet({
+      contentSecurityPolicy: false
+    })
+  )
   app.use(cors())
   app.use(xss())
   app.use(cookieParser())

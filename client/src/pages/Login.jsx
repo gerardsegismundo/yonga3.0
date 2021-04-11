@@ -76,6 +76,7 @@ const Login = ({ history }) => {
             appId={process.env.REACT_APP_FB_APP_ID}
             fields='name,email,picture'
             callback={handleFacebookLogin}
+            cookiePolicy={'single_host_origin'}
             render={renderProps => (
               <button onClick={renderProps.onClick}>
                 <i className='fa fa-facebook' />
