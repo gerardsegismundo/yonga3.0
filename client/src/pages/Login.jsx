@@ -20,7 +20,6 @@ const Login = ({ history }) => {
   const isAuthenticated = useSelector(({ user }) => user.isAuthenticated)
 
   const handleOnFailure = response => {
-    console.error(response)
     NotificationManager.warning('Something went wrong.', response, 3000)
   }
 

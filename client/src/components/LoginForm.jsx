@@ -12,8 +12,8 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const [form, setForm] = useState({
-    email: 'qwertyyonga@gmail.com',
-    password: '123456'
+    email: '',
+    password: ''
   })
 
   const [error, setError] = useState({

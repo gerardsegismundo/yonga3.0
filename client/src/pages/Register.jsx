@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { validateRegister } from '../utils/validations'
 import { removeErrorOnChange, progress } from '../utils/helpers'
 import { Link } from 'react-router-dom'
-// eslint-disable-next-line
 import { NotificationManager } from 'react-notifications'
 import _ from 'lodash'
 
@@ -12,10 +11,10 @@ const Register = () => {
   const [isLoading, setIsLoading] = useState(false)
 
   const [form, setForm] = useState({
-    name: 'testing',
-    email: 'qwertyyonga@gmail.com',
-    password: '123456',
-    confirmPassword: '123456'
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
   })
 
   const [error, setError] = useState({
